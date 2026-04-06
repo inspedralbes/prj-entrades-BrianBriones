@@ -7,6 +7,7 @@ use App\Http\Controllers\TicketController;
 use Illuminate\Http\Resources\Json\JsonResource;
 JsonResource::withoutWrapping(); 
 // Endpoints
-Route::get('/matches', [MatchController::class, 'index']);
+
 Route::get('/matches/{id}', [MatchController::class, 'show']);
 Route::post('/tickets/reserve', [TicketController::class, 'reserve']);
+Route::get('/matches', [MatchController::class, 'index']);
