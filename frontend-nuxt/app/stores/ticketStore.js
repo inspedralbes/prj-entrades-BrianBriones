@@ -5,6 +5,7 @@ export const useTicketStore = defineStore('ticket', {
   state: () => ({
     selectedTicket: null,
     quantity: 1,
+    matchId: null,
     loading: false,
     error: null,
     success: false
@@ -18,7 +19,8 @@ export const useTicketStore = defineStore('ticket', {
       try {
         await api.reserveTicket({
           ticket_type_id: this.selectedTicket,
-          quantity: this.quantity
+          quantity: this.quantity,
+          match_id: this.matchId
         });
         this.success = true;
       } catch (err) {
