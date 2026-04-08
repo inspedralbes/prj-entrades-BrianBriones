@@ -9,6 +9,7 @@ JsonResource::withoutWrapping();
 // Endpoints
 
 Route::get('/matches/{id}', [MatchController::class, 'show']);
+Route::post('/tickets/hold', [TicketController::class, 'hold']);
 Route::post('/tickets/reserve', [TicketController::class, 'reserve']);
 Route::get('/tickets/match/{match_id}', [TicketController::class, 'getByMatch']);
 Route::get('/matches', [MatchController::class, 'index']);

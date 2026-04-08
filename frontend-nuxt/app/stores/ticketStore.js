@@ -17,10 +17,15 @@ export const useTicketStore = defineStore('ticket', {
       this.error = null;
       this.success = false;
       try {
+        // 1. Opcional: Crear HOLD temporal interactuando con api de BFF (ejemplo de flujo)
+        // const holdRes = await fetch('http://localhost:4000/api/tickets/hold', { ... });
+        // const holdId = holdRes.json().holdId;
+        
         await api.reserveTicket({
           ticket_type_id: this.selectedTicket,
           quantity: this.quantity,
           match_id: this.matchId
+          // holdId: holdId // Pasarlo si usamos HOLD
         });
         this.success = true;
       } catch (err) {
