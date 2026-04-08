@@ -1,3 +1,6 @@
+<script setup>
+definePageMeta({ middleware: 'auth' })
+</script>
 <template>
   <div class="row align-items-center min-vh-100 text-center pb-5">
     <div class="col-md-6 mx-auto">
