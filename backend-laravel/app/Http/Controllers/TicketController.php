@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 use App\Models\TicketType;
 use App\Models\FootballMatch;
 use App\Models\TicketHold;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Http\Requests\ReserveTicketRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Support\Str;
+use App\Mail\TicketPurchaseConfirmation;
+use Illuminate\Support\Facades\Mail;
 
 final class TicketController extends Controller
 {
@@ -65,7 +68,7 @@ final class TicketController extends Controller
         $holdId       = $request->input('holdId');
 
         try {
-            return DB::transaction(function () use ($ticketTypeId, $quantity, $holdId) {
+            return DB::transaction(function () use ($ticketTypeId, $quantity, $holdId, $request) {
                 
                 TicketHold::where('expires_at', '<', now())->delete();
 
@@ -100,6 +103,24 @@ final class TicketController extends Controller
                 if (isset($hold)) {
                     $hold->delete();
                 }
+
+                // Generar asientos al azar porque no se piden en UI aún
+                $seats = [];
+                for ($i = 0; $i < $quantity; $i++) {
+                    $seats[] = 'Fila ' . rand(1, 20) . ' Asiento ' . rand(1, 100);
+                }
+
+                $order = Order::create([
+                    'user_id' => $request->user()->id,
+                    'match_id' => $ticketType->match_id,
+                    'ticket_type_id' => $ticketType->id,
+                    'seats' => $seats,
+                    'total_price' => $ticketType->price * $quantity,
+                ]);
+
+                // Ejecutando el envío de mail
+                Mail::to($request->user()->email)
+                    ->queue(new TicketPurchaseConfirmation($order));
 
                 return response()->json([
                     'message' => 'Reserva realizada correctamente',

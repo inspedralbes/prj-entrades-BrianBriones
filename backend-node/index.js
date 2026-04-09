@@ -208,7 +208,11 @@ app.get('/api/matches/:id', async (req, res) => {
 // Proxy Hold a Laravel
 app.post('/api/tickets/hold', async (req, res) => {
   try {
-    const response = await axios.post(`${LARAVEL_URL}/api/tickets/hold`, req.body);
+    const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' };
+    if (req.headers.authorization) headers['Authorization'] = req.headers.authorization;
+    if (req.headers.cookie) headers['Cookie'] = req.headers.cookie;
+
+    const response = await axios.post(`${LARAVEL_URL}/api/tickets/hold`, req.body, { headers });
     
     // Emitimos tickets updated genérico al resto
     io.emit('ticketsUpdated', { message: 'Hold activado en backend' });
@@ -223,7 +227,12 @@ app.post('/api/tickets/hold', async (req, res) => {
 app.post('/api/tickets/reserve', async (req, res) => {
   try {
     const { match_id } = req.body;
-    const response = await axios.post(`${LARAVEL_URL}/api/tickets/reserve`, req.body);
+    
+    const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' };
+    if (req.headers.authorization) headers['Authorization'] = req.headers.authorization;
+    if (req.headers.cookie) headers['Cookie'] = req.headers.cookie;
+
+    const response = await axios.post(`${LARAVEL_URL}/api/tickets/reserve`, req.body, { headers });
     
     io.emit('ticketsUpdated', { matchId: match_id });
 
