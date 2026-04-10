@@ -13,12 +13,13 @@ export const api = {
     return res.json();
   },
 
-  async reserveTicket(data) {
+  async reserveTicket(data, token) {
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    
     const res = await fetch(`${this.baseURL}/tickets/reserve`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers,
       body: JSON.stringify(data)
     });
     if (!res.ok) {
