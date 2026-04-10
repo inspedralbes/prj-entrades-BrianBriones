@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg-color: #0b1121;
+  --card-bg: #1e293b; /* A bit lighter for contrast */
+  --card-bg-light: #253347;
+  --primary-neon: #2ceb70; /* The green color */
+  --primary-neon-hover: #26c65e;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --font-family: 'Outfit', sans-serif;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: var(--font-family);
+  min-height: 100vh;
+}
+
+/* Typography Overrides */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family);
+}
+
+/* Custom Utilities */
+.text-neon {
+  color: var(--primary-neon) !important;
+}
+
+.bg-neon {
+  background-color: var(--primary-neon) !important;
+  color: #000 !important;
+}
+.bg-neon:hover {
+  background-color: var(--primary-neon-hover) !important;
+}
+
+.text-muted-custom {
+  color: var(--text-muted) !important;
+}
+
+/* Bootstrap Button Customization */
+.btn-primary {
+  background-color: var(--primary-neon) !important;
+  border-color: var(--primary-neon) !important;
+  color: #0b1121 !important;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+.btn-primary:hover {
+  background-color: var(--primary-neon-hover) !important;
+  border-color: var(--primary-neon-hover) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(44, 235, 112, 0.3);
+}
+
+.btn-outline-neon {
+  border: 1px solid var(--primary-neon);
+  color: var(--primary-neon);
+  background: transparent;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-neon:hover {
+  background: var(--primary-neon);
+  color: #0b1121;
+  box-shadow: 0 4px 15px rgba(44, 235, 112, 0.4);
+}
+
+/* Cards */
+.card-dark {
+  background-color: var(--card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: transform 0.2s ease;
+}
+.card-dark:hover {
+  transform: translateY(-5px);
+  border-color: rgba(44, 235, 112, 0.3);
+}
+
+/* Navbar */
+.navbar-custom {
+  background-color: transparent !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 1.5rem 0;
+}
+
+.form-control-dark {
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255,255,255, 0.1);
+  color: var(--text-main);
+  padding: 0.75rem 1rem;
+}
+.form-control-dark:focus {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-color: var(--primary-neon);
+  color: var(--text-main);
+  box-shadow: none;
+}
+.form-control-dark::placeholder {
+  color: var(--text-muted);
+}

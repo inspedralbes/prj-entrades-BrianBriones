@@ -137,11 +137,11 @@ function removeViewerFromMatch(socketId, matchId) {
 
 app.get('/api/matches', async (req, res) => {
   try {
-    let sportsRes = await axios.get('https://www.thesportsdb.com/api/v1/json/123/eventsnextleague.php?id=4335');
+    let sportsRes = await axios.get('https://www.thesportsdb.com/api/v1/json/3/eventsnextleague.php?id=4335');
     let upcomingEvents = sportsRes.data.events || [];
     
     if (upcomingEvents.length < 10) {
-      const pastRes = await axios.get('https://www.thesportsdb.com/api/v1/json/123/eventspastleague.php?id=4335');
+      const pastRes = await axios.get('https://www.thesportsdb.com/api/v1/json/3/eventspastleague.php?id=4335');
       if (pastRes.data && pastRes.data.events) {
         upcomingEvents = [...upcomingEvents, ...pastRes.data.events].slice(0, 15);
       }
@@ -174,7 +174,7 @@ app.get('/api/matches', async (req, res) => {
 app.get('/api/matches/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const sportsRes = await axios.get(`https://www.thesportsdb.com/api/v1/json/123/lookupevent.php?id=${id}`);
+    const sportsRes = await axios.get(`https://www.thesportsdb.com/api/v1/json/3/lookupevent.php?id=${id}`);
     const event = sportsRes.data.events ? sportsRes.data.events[0] : null;
     
     if (!event) {
