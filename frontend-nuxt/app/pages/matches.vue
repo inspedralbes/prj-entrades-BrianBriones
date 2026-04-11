@@ -36,7 +36,7 @@
     </div>
     
     <div v-else-if="matchStore.error" class="alert alert-danger shadow border-0 rounded-3 p-4 text-center bg-dark text-white border border-danger">
-      <h5>⚠️ Error de sincronización</h5>
+      <h5>Error de sincronización</h5>
       <p class="mb-0">{{ matchStore.error }}</p>
     </div>
     
@@ -48,8 +48,8 @@
     <ListaPartidos v-else :matches="matchStore.matches" />
     
     <div class="text-center mt-5 mb-3">
-       <button class="btn btn-outline-secondary rounded-pill px-5 py-3 border-secondary text-white fw-semibold">
-           Carregar més partits
+       <button @click="matchStore.fetchMatches()" class="btn btn-outline-secondary rounded-pill px-5 py-3 border-secondary text-white fw-semibold">
+           Recarregar partits
        </button>
     </div>
   </div>

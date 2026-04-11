@@ -5,15 +5,15 @@
       
       <!-- Pantalla de Cola Virtual -->
       <div v-if="inQueue" class="text-center py-5 card shadow-sm p-4 border-warning">
-        <h3 class="text-warning fw-bold mb-3">Estás en la cola virtual 🚶‍♂️</h3>
+        <h3 class="text-warning fw-bold mb-3">Estàs a la cua virtual...</h3>
         <div class="spinner-border text-warning my-3" style="width: 3rem; height: 3rem;" role="status"></div>
-        <p class="fs-4 mt-3">Tu posición: <strong class="badge bg-warning text-dark fs-3">{{ queuePosition }}</strong></p>
-        <p class="text-muted mt-3"><small>Por favor, no recargues la página ni cierres esta ventana.</small></p>
+        <p class="fs-4 mt-3">La teva posició: <strong class="badge bg-warning text-dark fs-3">{{ queuePosition }}</strong></p>
+        <p class="text-muted mt-3"><small>Si us plau, no recarreguis la pàgina.</small></p>
       </div>
 
       <div v-else-if="matchStore.loading || ticketStore.loading" class="text-center py-5">
         <div class="spinner-border text-primary" role="status"></div>
-        <p class="mt-2 text-muted">Cargando disponibilidad...</p>
+        <p class="mt-2 text-muted">Carregant disponibilitat...</p>
       </div>
       
       <div v-else-if="matchStore.error || ticketStore.error" class="alert alert-danger">
@@ -23,13 +23,20 @@
       <div v-else-if="matchStore.currentMatch">
         <div class="alert alert-info border-0 shadow-sm mb-4">
           <h5 class="fw-bold mb-1">{{ matchStore.currentMatch.home_team }} vs {{ matchStore.currentMatch.away_team }}</h5>
-          <small>🏟️ {{ matchStore.currentMatch.stadium }}</small>
+          <small>Estadi: {{ matchStore.currentMatch.stadium }}</small>
         </div>
         
-        <TicketSelector 
-          :tickets="matchStore.currentMatch.tickets || []"
-          :loading="ticketStore.loading || inQueue"
-          @reserve="handleReserve" 
+        <SeatSelection
+          v-if="currentStep === 'selection'"
+          :match="matchStore.currentMatch"
+          @confirm="handleSeatSelection"
+        />
+
+        <ResumCompra
+          v-else-if="currentStep === 'resum'"
+          :match="matchStore.currentMatch"
+          :seats="selectedSeatsData"
+          @pay="handlePayment"
         />
       </div>
     </div>
@@ -53,13 +60,18 @@ const ticketStore = useTicketStore();
 const inQueue = ref(true);
 const queuePosition = ref(0);
 
+// Flujo de compra
+const currentStep = ref('selection');
+const selectedSeatsData = ref([]);
+
 onMounted(() => {
   // Asegurar que el partido e inventario (tickets) estén cargados
   if (!matchStore.currentMatch || matchStore.currentMatch.id != route.params.id) {
     matchStore.fetchMatch(route.params.id);
   }
 
-  // --- LÓGICA DE COLA ---
+  // --- LÓGICA DE SALAS Y COLA ---
+  socket.emit('viewMatch', route.params.id);
   socket.emit('joinQueue');
   
   socket.on('queuePosition', (data) => {
@@ -82,20 +94,55 @@ onMounted(() => {
 
 // Limpiamos eventos al salir
 onUnmounted(() => {
-  socket.emit('leaveQueue'); // Avisar al servidor que salimos explícitamente
+  socket.emit('leaveQueue'); 
+  socket.emit('leaveMatch', route.params.id); // Al salir de tickets, liberamos bloqueos temporales
   socket.off("ticketsUpdated");
   socket.off("queuePosition");
   socket.off("queueApproved");
 });
 
-const handleReserve = async (data) => {
-  ticketStore.selectedTicket = data.ticket_type_id;
-  ticketStore.quantity = data.quantity;
-  ticketStore.matchId = route.params.id;
+// Se invoca al dar click en 'CONFIRMAR I PAGAR' en la vista de Asientos
+  const handleSeatSelection = (seats) => {
+    // Verificación final en el servidor (Race Condition Check)
+    const seatIds = seats.map(s => s.id);
+    socket.emit('requestHold', { matchId: route.params.id, seats: seatIds });
+    selectedSeatsData.value = seats; // Guardamos temporal
+  };
+
+  // Escuchadores de respuesta al HOLD!
+  socket.on('holdSuccess', () => {
+    currentStep.value = 'resum'; // Pasamos a finalizar compra!
+  });
+
+  socket.on('holdFailed', () => {
+    alert('⚠️ Error: Un altre usuari ja ha reservat o comprat algun d\'aquests seients just abans que tu. Si us plau, escull-ne uns altres.');
+  });
+  
+  // Clean listeners on leaving
+  onUnmounted(() => {
+    socket.off('holdSuccess');
+    socket.off('holdFailed');
+  });
+
+const handlePayment = async () => {
+  // Simplificado para la demostración - usando el primer ticket disponible si TheSportsDB
+  let tkId = 1; 
+  if (matchStore.currentMatch.tickets && matchStore.currentMatch.tickets.length > 0) {
+     tkId = matchStore.currentMatch.tickets[0].id;
+  }
+  
+  ticketStore.selectedTicket = tkId;
+  ticketStore.quantity = selectedSeatsData.value.length;
+  
+  // Asegurarnos de que el match_id sea un número entero para no chocar con la validación de Laravel
+  const parsedId = parseInt(route.params.id, 10);
+  ticketStore.matchId = isNaN(parsedId) ? 1 : parsedId;
   
   await ticketStore.reserveTicket();
   
   if (ticketStore.success) {
+    const seatIds = selectedSeatsData.value.map(s => s.id);
+    socket.emit('seatPurchased', { matchId: route.params.id, seats: seatIds });
     router.push('/confirmation');
   }
 };

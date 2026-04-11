@@ -4,15 +4,17 @@
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 gap-3">
       <div>
         <div class="text-neon fw-bold mb-1" style="font-size: 0.75rem; letter-spacing: 1.5px;">LALIGA EA SPORTS</div>
-        <h1 class="text-white fw-bold mb-2 match-title" style="letter-spacing: -1px;">FC BARCELONA <span class="text-muted-custom fw-normal fs-3 px-1">VS</span> GIRONA FC</h1>
+        <h1 class="text-white fw-bold mb-2 match-title" style="letter-spacing: -1px;">
+           {{ match?.home_team || 'Partit' }} <span class="text-muted-custom fw-normal fs-3 px-1">VS</span> {{ match?.away_team || '' }}
+        </h1>
         <div class="d-flex flex-wrap gap-3 text-muted-custom mt-2" style="font-size: 0.9rem;">
           <div class="d-flex align-items-center gap-2">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            14 de Desembre, 21:00h
+            {{ formatDate(match?.date) }}
           </div>
           <div class="d-flex align-items-center gap-2">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-            Estadi Olímpic Lluís Companys
+            {{ match?.stadium || 'Estadi Principal' }}
           </div>
         </div>
       </div>
@@ -21,6 +23,7 @@
       <div class="d-flex gap-3 align-items-center bg-dark px-3 py-2 rounded-pill border border-secondary shadow-sm" style="background-color: var(--card-bg) !important; border-color: rgba(255,255,255,0.05) !important;">
         <div class="legend-item"><span class="legend-dot free"></span> Lliure</div>
         <div class="legend-item"><span class="legend-dot occupied"></span> Ocupat</div>
+        <div class="legend-item"><span class="legend-dot locked"></span> Reservat per un altre</div>
         <div class="legend-item"><span class="legend-dot selected"></span> Seleccionat</div>
       </div>
     </div>
@@ -148,7 +151,7 @@
              </span>
           </div>
 
-          <button class="btn btn-primary w-100 py-3 fw-bold rounded-3 shadow-none text-dark" style="font-size: 1.05rem; letter-spacing: 0.5px;" :disabled="selectedSeatsList.length === 0">
+          <button class="btn btn-primary w-100 py-3 fw-bold rounded-3 shadow-none text-dark" style="font-size: 1.05rem; letter-spacing: 0.5px;" :disabled="selectedSeatsList.length === 0" @click="emitConfirm">
              CONFIRMAR I PAGAR
           </button>
         </div>
@@ -170,61 +173,151 @@
         </div>
       </div>
     </div>
+    <!-- Custom Alert Warning -->
+    <transition name="fade">
+      <div v-if="alertMessage" class="alert alert-warning position-fixed shadow-lg border border-warning d-flex align-items-center gap-3" style="top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050; border-radius: 12px; font-weight: bold;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        {{ alertMessage }}
+      </div>
+    </transition>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { socket } from '~/services/socket';
 
-// Mock state para simular asientos (0 = libre, 1 = ocupado)
-// Se hace un mapa base para generar visualmente algo parecido a la imagen
-const seatStates = ref({
-  lateral: Array(40).fill(0).map((_, i) => Math.random() > 0.7 ? 1 : 0),
-  tribuna: Array(40).fill(0).map((_, i) => Math.random() > 0.6 ? 1 : 0),
-  golNord: Array(24).fill(0).map((_, i) => Math.random() > 0.5 ? 1 : 0),
-  golSud: Array(24).fill(0).map((_, i) => Math.random() > 0.8 ? 1 : 0),
+const props = defineProps({
+  match: {
+    type: Object,
+    default: null
+  }
 });
 
-// Forzamos un par a estar seleccionados visualmente si queremos iniciar así (opcional)
-const selectedSeatsList = ref([
-  { id: 'lat-14', zone: 'LATERAL', sector: 204, row: 12, num: 42, price: 125, list: 'lateral', index: 14 },
-  { id: 'gols-7', zone: 'GOL SUD', sector: 112, row: 3, num: 15, price: 85, list: 'golSud', index: 7 }
-]);
+const emit = defineEmits(['confirm']);
 
-// Mark the pre-selected in state
-selectedSeatsList.value.forEach(seat => {
-  seatStates.value[seat.list][seat.index - 1] = 2; // 2 = selected
+const formatDate = (dateString) => {
+  if (!dateString) return '';
+  const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+  return new Date(dateString).toLocaleDateString('ca-ES', options);
+};
+
+// Seat states: 0 = libre, 1 = ocupado permanentemente, 2 = seleccionado por mi, 3 = bloqueado por otro en tiempo real
+const seatStates = ref({
+  lateral: Array(40).fill(0),
+  tribuna: Array(40).fill(0),
+  golNord: Array(24).fill(0),
+  golSud: Array(24).fill(0),
+});
+
+const selectedSeatsList = ref([]);
+
+const alertMessage = ref('');
+let alertTimeout = null;
+const showAlert = (msg) => {
+  alertMessage.value = msg;
+  if (alertTimeout) clearTimeout(alertTimeout);
+  alertTimeout = setTimeout(() => { alertMessage.value = ''; }, 3500);
+};
+
+const mapIdToZone = {
+  'lat': 'lateral',
+  'trib': 'tribuna',
+  'goln': 'golNord',
+  'gols': 'golSud'
+};
+
+const setSeatStateById = (id, state) => {
+  const parts = id.split('-');
+  const zone = mapIdToZone[parts[0]];
+  const index = parseInt(parts[1], 10);
+  if (zone && index) {
+     seatStates.value[zone][index - 1] = state;
+     
+     // Si cambiaron el estado a 3 y lo teniamos seleccionado, removerlo!
+     if (state === 3) {
+        selectedSeatsList.value = selectedSeatsList.value.filter(s => s.id !== id);
+     }
+  }
+};
+
+onMounted(() => {
+  if (props.match) {
+    socket.emit('getLocks', props.match.id);
+  }
+
+  socket.on('initialLocks', (locks) => {
+    for (const seatId in locks) {
+      if (locks[seatId] !== socket.id) {
+        setSeatStateById(seatId, 3);
+      }
+    }
+  });
+
+  socket.on('initialOccupied', (seatsList) => {
+    seatsList.forEach(seatId => setSeatStateById(seatId, 1));
+  });
+
+  socket.on('seatsOccupied', (seatsList) => {
+    seatsList.forEach(seatId => setSeatStateById(seatId, 1));
+  });
+
+  socket.on('seatLocked', ({ seatId, socketId }) => {
+    if (socketId !== socket.id) {
+       setSeatStateById(seatId, 3);
+    }
+  });
+
+  socket.on('seatUnlocked', ({ seatId }) => {
+     // Solo libéralo si estaba bloqueado por alguien, si está comprado u ocupado fijo no.
+     // Como no guardamos ocupado fijo dinamicamente aquí, lo volvemos 0
+     setSeatStateById(seatId, 0);
+  });
+});
+
+onUnmounted(() => {
+  socket.off('initialLocks');
+  socket.off('seatLocked');
+  socket.off('seatUnlocked');
+  socket.off('initialOccupied');
+  socket.off('seatsOccupied');
 });
 
 const getSeatState = (zone, index) => {
   const state = seatStates.value[zone][index - 1];
   if (state === 1) return 'occupied';
   if (state === 2) return 'selected';
+  if (state === 3) return 'locked';
   return 'free';
 };
 
 const toggleSeat = (seatData, zone, index) => {
   const currentState = seatStates.value[zone][index - 1];
   
-  // Can't click occupied seats
-  if (currentState === 1) return;
+  if (currentState === 1) return; // ocupado fijo
+  
+  if (currentState === 3) {
+    showAlert('Aquesta entrada acaba de ser reservada per un altre usuari que està pagant!');
+    return;
+  }
 
   if (currentState === 2) {
-    // Deselect
     seatStates.value[zone][index - 1] = 0;
     selectedSeatsList.value = selectedSeatsList.value.filter(s => s.id !== seatData.id);
   } else {
-    // Select
+    // Check limit
+    if (selectedSeatsList.value.length >= 8) {
+       showAlert('Com a màxim es poden seleccionar 8 entrades.');
+       return;
+    }
+    
     seatStates.value[zone][index - 1] = 2;
-    // Inject the internal logic vars
     selectedSeatsList.value.push({ ...seatData, list: zone, index });
   }
 };
 
 const removeSeatFromList = (seat) => {
-  // Revert its state
   seatStates.value[seat.list][seat.index - 1] = 0;
-  // Remove from array
   selectedSeatsList.value = selectedSeatsList.value.filter(s => s.id !== seat.id);
 };
 
@@ -251,6 +344,12 @@ const despesesFormated = computed(() => {
 const totalFormated = computed(() => {
   return total.value.toFixed(2).replace('.', ',');
 });
+
+const emitConfirm = () => {
+  if (selectedSeatsList.value.length > 0) {
+    emit('confirm', selectedSeatsList.value);
+  }
+};
 </script>
 
 <style scoped>
@@ -269,7 +368,8 @@ const totalFormated = computed(() => {
   display: inline-block;
 }
 .legend-dot.free { background-color: var(--primary-neon); }
-.legend-dot.occupied { background-color: var(--card-bg-light); border: 1px solid rgba(255,255,255,0.1); }
+.legend-dot.occupied { background-color: var(--card-bg-light); border: 1px solid rgba(255,255,255,0.1); cursor: not-allowed; }
+.legend-dot.locked { background-color: var(--bs-warning); }
 .legend-dot.selected { background-color: #fff; box-shadow: 0 0 10px rgba(255,255,255,0.5); }
 
 /* Pitch Background CSS */
@@ -326,6 +426,7 @@ const totalFormated = computed(() => {
 }
 .seat-dot.free { background-color: var(--primary-neon); }
 .seat-dot.occupied { background-color: rgba(255,255,255,0.1); cursor: not-allowed; }
+.seat-dot.locked { background-color: var(--bs-warning); opacity: 0.8; cursor: not-allowed; }
 .seat-dot.selected { 
   background-color: #fff; 
   box-shadow: 0 0 10px rgba(255,255,255,0.6); 
@@ -353,6 +454,16 @@ const totalFormated = computed(() => {
 .list-leave-to {
   opacity: 0;
   transform: translateX(-30px);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translate(-50%, -20px) !important;
 }
 
 /* Scrollbar customization para la lista de asientos */

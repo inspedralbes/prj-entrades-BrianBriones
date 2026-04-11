@@ -15,7 +15,7 @@
         <div class="px-4 py-3 pb-2 d-flex justify-content-between align-items-center flex-grow-1">
            <div class="d-flex align-items-center gap-2" style="width: 40%;">
               <div class="bg-dark rounded-circle border border-secondary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
-                ⚽
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
               </div>
               <h4 class="card-title fw-bold mb-0 text-white" style="line-height: 1.1;">{{ match.home_team }}</h4>
            </div>
@@ -25,18 +25,17 @@
            <div class="d-flex align-items-center justify-content-end gap-2 text-end" style="width: 40%;">
               <h4 class="card-title fw-bold mb-0 text-white" style="line-height: 1.1;">{{ match.away_team }}</h4>
               <div class="bg-dark rounded-circle border border-secondary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
-                ⚽
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
               </div>
            </div>
         </div>
 
-        <!-- Date & Location -->
         <div class="px-4 py-2 mb-3">
            <div class="d-flex align-items-center mb-1 text-muted-custom small">
-             <span class="me-2">📅</span> {{ formatDate(match.date) }}
+             <span class="me-2 text-neon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span> {{ formatDate(match.date) }}
            </div>
            <div class="d-flex align-items-center text-muted-custom small">
-             <span class="me-2">📍</span> {{ match.stadium }}
+             <span class="me-2 text-neon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></span> {{ match.stadium }}
            </div>
         </div>
         

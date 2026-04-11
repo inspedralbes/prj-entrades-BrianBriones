@@ -28,8 +28,8 @@
           <div class="d-flex justify-content-between align-items-start mb-4">
             <div>
               <div class="text-neon fw-bold mb-1" style="font-size: 0.65rem; letter-spacing: 2px;">PROPER PARTIT</div>
-              <h2 class="text-white fw-bold mb-1" style="letter-spacing: -0.5px;">FC Barcelona vs Real Madrid</h2>
-              <div class="text-muted-custom" style="font-size: 0.9rem;">Lliga EA Sports • Jornada 32</div>
+              <h2 class="text-white fw-bold mb-1" style="letter-spacing: -0.5px;">{{ match?.home_team || 'Equip Local' }} vs {{ match?.away_team || 'Equip Visitant' }}</h2>
+              <div class="text-muted-custom" style="font-size: 0.9rem;">Lliga EA Sports</div>
             </div>
             <div class="text-neon">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -44,19 +44,19 @@
           <div class="row g-4 mb-5 pb-3"> <!-- Added pb-3 to give more space before the footer line -->
             <div class="col-sm-6 col-md-4">
               <div class="text-muted-custom fw-bold mb-1" style="font-size: 0.65rem; letter-spacing: 1px;">ESTADI</div>
-              <div class="text-white fw-medium lh-sm px-1">Estadi Olímpic<br>Lluís Companys</div>
+              <div class="text-white fw-medium lh-sm px-1">{{ match?.stadium || 'Estadi Olímpic' }}</div>
             </div>
             <div class="col-sm-6 col-md-4">
               <div class="text-muted-custom fw-bold mb-1" style="font-size: 0.65rem; letter-spacing: 1px;">DATA I HORA</div>
-              <div class="text-white fw-medium lh-sm px-1">21 Abr. 2024 •<br>21:00h</div>
+              <div class="text-white fw-medium lh-sm px-1">{{ formatDate(match?.date) }}</div>
             </div>
             <div class="col-sm-6 col-md-4">
               <div class="text-muted-custom fw-bold mb-1" style="font-size: 0.65rem; letter-spacing: 1px;">ZONA</div>
-              <div class="text-neon fw-medium lh-sm px-1">Lateral 1a<br>Graderia</div>
+              <div class="text-neon fw-medium lh-sm px-1">Seients Seleccionats</div>
             </div>
             <div class="col-sm-6 col-md-4">
               <div class="text-muted-custom fw-bold mb-1" style="font-size: 0.65rem; letter-spacing: 1px;">QUANTITAT</div>
-              <div class="text-white fw-medium px-1">2 Entrades</div>
+              <div class="text-white fw-medium px-1">{{ seats?.length || 2 }} Entrades</div>
             </div>
             <div class="col-sm-6 col-md-8">
               <div class="text-muted-custom fw-bold mb-1" style="font-size: 0.65rem; letter-spacing: 1px;">CADIRA</div>
@@ -75,8 +75,8 @@
               </div>
             </div>
             <div class="text-end">
-              <div class="text-muted-custom fw-bold mb-1" style="font-size: 0.65rem; letter-spacing: 1px;">PREU UNITARI</div>
-              <div class="text-white fw-bold fs-3 lh-1">145,00 €</div>
+              <div class="text-muted-custom fw-bold mb-1" style="font-size: 0.65rem; letter-spacing: 1px;">PREU TOTAL ENTRADES</div>
+              <div class="text-white fw-bold fs-3 lh-1">{{ subtotal }} €</div>
             </div>
           </div>
         </div>
@@ -106,8 +106,8 @@
           
           <div class="d-flex flex-column gap-3 mb-4 flex-grow-1">
             <div class="d-flex justify-content-between align-items-center text-muted-custom fs-6">
-              <span>2× Entrades (Lateral)</span>
-              <span class="text-white">290,00 €</span>
+              <span>{{ seats?.length || 2 }}× Entrades</span>
+              <span class="text-white">{{ subtotal }} €</span>
             </div>
             <div class="d-flex justify-content-between align-items-center text-muted-custom fs-6">
               <span>Despeses de gestió</span>
@@ -122,11 +122,11 @@
           <!-- Total Callout -->
           <div class="rounded-3 p-4 mb-4 d-flex justify-content-between align-items-center" style="background-color: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
             <div class="text-white fw-bold fs-5">Total a pagar</div>
-            <div class="text-neon fw-bold" style="font-size: 2rem; line-height: 1; letter-spacing: -1px;">366,02 €</div>
+            <div class="text-neon fw-bold" style="font-size: 2rem; line-height: 1; letter-spacing: -1px;">{{ grandTotal }} €</div>
           </div>
 
           <!-- Proceed Button -->
-          <button class="btn btn-primary w-100 py-3 fw-bold rounded-3 shadow-none text-dark d-flex justify-content-center align-items-center gap-2 mb-4" style="font-size: 1.05rem; letter-spacing: 0.5px;">
+          <button @click="emitPay" class="btn btn-primary w-100 py-3 fw-bold rounded-3 shadow-none text-dark d-flex justify-content-center align-items-center gap-2 mb-4" style="font-size: 1.05rem; letter-spacing: 0.5px;">
              Continuar al pagament
              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
           </button>
@@ -184,7 +184,42 @@
 </template>
 
 <script setup>
-// En un caso real, aquí recibirías los datos de la compra como props o del store
+import { computed } from 'vue';
+
+const props = defineProps({
+  match: {
+    type: Object,
+    default: null
+  },
+  seats: {
+    type: Array,
+    default: () => []
+  }
+});
+
+const emit = defineEmits(['pay']);
+
+const emitPay = () => {
+  emit('pay');
+};
+
+const formatDate = (dateString) => {
+  if (!dateString) return '';
+  const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+  return new Date(dateString).toLocaleDateString('ca-ES', options);
+};
+
+const subtotal = computed(() => {
+  if (!props.seats || props.seats.length === 0) return '290.00';
+  const sum = props.seats.reduce((acc, seat) => acc + (seat.price || 145), 0);
+  return sum.toFixed(2);
+});
+
+const grandTotal = computed(() => {
+  const sub = parseFloat(subtotal.value);
+  const total = sub + 12.50 + 63.52; // adding fake taxes inside as requested
+  return total.toFixed(2);
+});
 </script>
 
 <style scoped>

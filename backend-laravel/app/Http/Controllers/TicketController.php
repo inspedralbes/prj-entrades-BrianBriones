@@ -175,4 +175,16 @@ final class TicketController extends Controller
 
         return response()->json($tickets);
     }
+
+    /**
+     * Obtener el historial de entradas (órdenes) del usuario autenticado
+     */
+    public function myOrders(Request $request): JsonResponse
+    {
+        $orders = Order::with(['match', 'ticketType'])
+            ->where('user_id', $request->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return response()->json($orders);
+    }
 }

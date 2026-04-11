@@ -27,5 +27,33 @@ export const api = {
       throw new Error(err.message || 'Error en la reserva');
     }
     return res.json();
+  },
+
+  async getOrders(token) {
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const res = await fetch(`${this.baseURL}/orders`, { headers });
+    if (!res.ok) throw new Error('Error al obtener mis entradas');
+    return res.json();
+  },
+
+  async getAdminStats(token) {
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const res = await fetch(`${this.baseURL}/admin/stats`, { headers });
+    if (!res.ok) throw new Error('Error al obtener estadisticas');
+    return res.json();
+  },
+
+  async createMatch(data, token) {
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const res = await fetch(`${this.baseURL}/admin/matches`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error('Error al guardar el evento');
+    return res.json();
   }
 };
