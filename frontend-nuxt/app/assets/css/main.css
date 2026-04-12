@@ -1,14 +1,59 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
-:root {
-  --bg-color: #0b1121;
-  --card-bg: #1e293b; /* A bit lighter for contrast */
-  --card-bg-light: #253347;
-  --primary-neon: #2ceb70; /* The green color */
+html {
+  /* Light Mode (Día) */
+  --bg-color: #f1f5f9; /* Slate-100: Gris muy tenue para aportar profundidad */
+  --card-bg: #ffffff; /* Tarjetas en blanco puro */
+  --card-bg-light: #f8fafc;
+  --card-border: rgba(0, 0, 0, 0.05);
+  --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-md */
+  
+  /* Verde Neón para botones grandes (Mantiene identidad FastGoal #2eff8c) */
+  --primary-neon: #2eff8c; 
   --primary-neon-hover: #26c65e;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
+  
+  /* Verde Adaptable para textos finos y bordes (Emerald-600 para accesibilidad sobre claro) */
+  --neon-accessible: #059669; 
+  --neon-accessible-hover: #047857;
+  --neon-hover-text: #ffffff; /* Texto que contrasta bien sobre Emerald */
+  
+  --text-main: #0f172a; /* Slate-900 oscuro para la lectura perfecta */
+  --text-muted: #64748b;
+  --nav-text: #0f172a; 
+  --nav-input-bg: #ffffff;
+  
+  /* Banners Premium "EL CLÀSSIC" - Siempre se mantienen oscuros */
+  --banner-bg: #050b18; 
+  --banner-text: #ffffff;
+  
   --font-family: 'Outfit', sans-serif;
+}
+
+html.dark {
+  /* Dark Mode (Noche - Base FastGoal) */
+  --bg-color: #050b18; /* Azul ultra oscuro */
+  --card-bg: #1e293b; 
+  --card-bg-light: #253347;
+  --card-border: rgba(255, 255, 255, 0.05); /* Borde sutil, sin sombreado */
+  --card-shadow: none; 
+  
+  /* Botones grandes */
+  --primary-neon: #2eff8c; 
+  --primary-neon-hover: #2ceb70;
+  
+  /* Textos y bordes finos vuelven a brillar en neón aquí */
+  --neon-accessible: #2eff8c; 
+  --neon-accessible-hover: #2ceb70;
+  --neon-hover-text: #0b1121; /* Texto oscuro sobre el botón de neón */
+  
+  --text-main: #f8fafc; /* Blanco puro */
+  --text-muted: #94a3b8;
+  --nav-text: #ffffff; 
+  --nav-input-bg: rgba(0, 0, 0, 0.2);
+  
+  /* Banners Premium coinciden con el fondo base */
+  --banner-bg: #050b18; 
+  --banner-text: #ffffff;
 }
 
 body {
@@ -16,6 +61,7 @@ body {
   color: var(--text-main);
   font-family: var(--font-family);
   min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Typography Overrides */
@@ -25,15 +71,26 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Custom Utilities */
 .text-neon {
-  color: var(--primary-neon) !important;
+  /* Utiliza la variable adaptable: Emerald en Claro, Neón en Oscuro */
+  color: var(--neon-accessible) !important;
 }
 
 .bg-neon {
+  /* Siempre Neón Brillante para fondos anchos */
   background-color: var(--primary-neon) !important;
-  color: #000 !important;
+  color: #050b18 !important; /* Letra muy oscura para máximo contraste */
 }
 .bg-neon:hover {
   background-color: var(--primary-neon-hover) !important;
+}
+
+/* Clases Premium Banners */
+.bg-premium-dark {
+  background-color: var(--banner-bg) !important;
+  color: var(--banner-text) !important;
+}
+.bg-premium-dark .text-muted-custom {
+  color: #94a3b8 !important; /* Forza slate-400 dentro del banner incluso en modo claro */
 }
 
 .text-muted-custom {
@@ -56,49 +113,59 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-outline-neon {
-  border: 1px solid var(--primary-neon);
-  color: var(--primary-neon);
+  border: 1px solid var(--neon-accessible);
+  color: var(--neon-accessible);
   background: transparent;
   font-weight: 600;
   transition: all 0.3s ease;
 }
 
 .btn-outline-neon:hover {
-  background: var(--primary-neon);
-  color: #0b1121;
+  background: var(--neon-accessible);
+  color: var(--neon-hover-text); /* Blanco cuando es Emerald, Negro cuando es Neón */
   box-shadow: 0 4px 15px rgba(44, 235, 112, 0.4);
 }
 
 /* Cards */
 .card-dark {
   background-color: var(--card-bg);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: transform 0.2s ease;
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  color: var(--text-main);
+  transition: transform 0.2s ease, box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
 }
 .card-dark:hover {
   transform: translateY(-5px);
-  border-color: rgba(44, 235, 112, 0.3);
+  border-color: var(--neon-accessible);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 /* Navbar */
 .navbar-custom {
   background-color: transparent !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--card-border);
   padding: 1.5rem 0;
 }
 
-.form-control-dark {
-  background-color: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255,255,255, 0.1);
+/* Clases de Navbar Inteligentes */
+.text-nav {
+  color: var(--nav-text) !important;
+  transition: color 0.3s ease;
+}
+
+.form-control-themed {
+  background-color: var(--nav-input-bg);
+  border: 1px solid rgba(128, 128, 128, 0.2);
   color: var(--text-main);
   padding: 0.75rem 1rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
-.form-control-dark:focus {
-  background-color: rgba(0, 0, 0, 0.3);
-  border-color: var(--primary-neon);
+.form-control-themed:focus {
+  background-color: var(--card-bg-light);
+  border-color: var(--neon-accessible);
   color: var(--text-main);
   box-shadow: none;
 }
-.form-control-dark::placeholder {
+.form-control-themed::placeholder {
   color: var(--text-muted);
 }

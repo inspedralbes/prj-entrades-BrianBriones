@@ -4,7 +4,7 @@
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 gap-3">
       <div>
         <div class="text-neon fw-bold mb-1" style="font-size: 0.75rem; letter-spacing: 1.5px;">LALIGA EA SPORTS</div>
-        <h1 class="text-white fw-bold mb-2 match-title" style="letter-spacing: -1px;">
+        <h1 class="text-main fw-bold mb-2 match-title" style="letter-spacing: -1px;">
            {{ match?.home_team || 'Partit' }} <span class="text-muted-custom fw-normal fs-3 px-1">VS</span> {{ match?.away_team || '' }}
         </h1>
         <div class="d-flex flex-wrap gap-3 text-muted-custom mt-2" style="font-size: 0.9rem;">
@@ -20,7 +20,7 @@
       </div>
       
       <!-- Legend -->
-      <div class="d-flex gap-3 align-items-center bg-dark px-3 py-2 rounded-pill border border-secondary shadow-sm" style="background-color: var(--card-bg) !important; border-color: rgba(255,255,255,0.05) !important;">
+      <div class="d-flex gap-3 align-items-center card-dark px-3 py-2 rounded-pill mt-3 mt-md-0" style="background-color: var(--card-bg) !important; border: 1px solid var(--card-border) !important;">
         <div class="legend-item"><span class="legend-dot free"></span> Lliure</div>
         <div class="legend-item"><span class="legend-dot occupied"></span> Ocupat</div>
         <div class="legend-item"><span class="legend-dot locked"></span> Reservat per un altre</div>
@@ -31,7 +31,7 @@
     <div class="row g-4 mb-4">
       <!-- Left Column: Stadium Map -->
       <div class="col-xl-8">
-        <div class="card h-100 border-0 rounded-4 p-0 overflow-hidden position-relative stadium-container shadow-lg" style="min-height: 550px; background-color: var(--card-bg);">
+        <div class="card h-100 border-0 rounded-4 p-0 overflow-hidden position-relative stadium-container card-dark shadow-lg" style="min-height: 550px;">
           
           <!-- Football Pitch SVG/Background -->
           <div class="pitch-bg position-absolute w-100 h-100 p-5 d-flex align-items-center justify-content-center">
@@ -105,8 +105,8 @@
       <!-- Right Column: Summary Sidebar -->
       <div class="col-xl-4 d-flex flex-column gap-3">
         <!-- Summary Card -->
-        <div class="card flex-grow-1 border-0 rounded-4 p-4 shadow-lg summary-card" style="background-color: var(--card-bg);">
-          <h3 class="text-white fw-bold mb-4" style="font-size: 1.3rem;">Resum de la selecció</h3>
+        <div class="card flex-grow-1 border-0 rounded-4 p-4 shadow-lg summary-card card-dark">
+          <h3 class="text-main fw-bold mb-4" style="font-size: 1.3rem;">Resum de la selecció</h3>
           
           <!-- Selected Seats List -->
           <div class="selected-seats-container d-flex flex-column gap-3 mb-4 flex-grow-1 overflow-auto" style="min-height: 200px; max-height: 300px;">
@@ -117,10 +117,10 @@
                  
                  <div class="ps-2">
                     <div class="text-neon fw-bold mb-1" style="font-size: 0.65rem; letter-spacing: 1px;">{{ seat.zone }} - SECTOR {{ seat.sector }}</div>
-                    <div class="text-white fw-medium" style="font-size: 0.95rem;">Fila {{ seat.row }}, Seient {{ seat.num }}</div>
+                    <div class="text-main fw-medium" style="font-size: 0.95rem;">Fila {{ seat.row }}, Seient {{ seat.num }}</div>
                  </div>
                  <div class="text-end d-flex flex-column justify-content-between align-items-end">
-                    <div class="text-white fw-bold fs-5 mb-1" style="line-height: 1;">{{ seat.price }} €</div>
+                    <div class="text-main fw-bold fs-5 mb-1" style="line-height: 1;">{{ seat.price }} €</div>
                     <button class="btn btn-link p-0 text-danger text-decoration-none fw-bold hover-opacity" style="font-size: 0.65rem; letter-spacing: 0.5px;" @click="removeSeatFromList(seat)">ELIMINAR</button>
                  </div>
               </div>
@@ -145,7 +145,7 @@
           </div>
 
           <div class="d-flex justify-content-between align-items-end mb-4 pt-2">
-             <span class="text-white fw-bold fs-5 mb-1">Total</span>
+             <span class="text-main fw-bold fs-5 mb-1">Total</span>
              <span class="text-neon fw-bold d-flex align-items-start" style="font-size: 2.2rem; line-height: 1;">
                {{ totalFormated }}<span class="fs-4 ms-1">€</span>
              </span>
@@ -157,7 +157,7 @@
         </div>
 
         <!-- Security Badge Card -->
-        <div class="card border-0 rounded-4 p-3 d-flex flex-row align-items-center gap-3 shadow-sm" style="background-color: var(--card-bg);">
+        <div class="card border-0 rounded-4 p-3 d-flex flex-row align-items-center gap-3 shadow-sm card-dark">
            <div class="flex-shrink-0 d-flex align-items-center justify-content-center rounded-3 bg-opacity-25" style="width: 48px; height: 48px; background-color: rgba(255, 193, 7, 0.1);">
              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="#ffc107" stroke="#ffc107" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -165,7 +165,7 @@
              </svg>
            </div>
            <div>
-             <div class="text-white fw-bold mb-1" style="font-size: 0.9rem;">Pagament 100% Segur</div>
+             <div class="text-main fw-bold mb-1" style="font-size: 0.9rem;">Pagament 100% Segur</div>
              <div class="text-muted-custom" style="font-size: 0.8rem; line-height: 1.3;">
                Entrades oficials garantides per FastGoal Tickets.
              </div>
