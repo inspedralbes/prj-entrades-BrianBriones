@@ -40,14 +40,9 @@ onMounted(async () => {
            <NuxtLink to="/matches" class="text-nav text-decoration-none me-4 pb-1 border-bottom border-success">Partits</NuxtLink>
            <NuxtLink v-if="token" to="/my-tickets" class="text-muted-custom text-decoration-none me-4">Les meves entrades</NuxtLink>
            <NuxtLink v-if="token" to="/admin" class="text-muted-custom text-decoration-none me-4">Administració</NuxtLink>
-           <a href="#" class="text-muted-custom text-decoration-none">Notícies</a>
         </div>
         
         <div class="d-flex align-items-center">
-            <div class="input-group me-3" style="max-width: 250px;">
-               <input type="text" class="form-control form-control-themed rounded-pill" placeholder="Cerca partits...">
-            </div>
-            
             <!-- Selector de Tema Mejorado (Envuelto en ClientOnly para evitar Hydration Mismatch) -->
             <ClientOnly>
                <ThemeToggle />

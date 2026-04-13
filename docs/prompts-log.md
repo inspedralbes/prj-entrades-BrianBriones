@@ -82,3 +82,39 @@ Revisa por qué el fondo no está cambiando correctamente (asegúrate de que tai
 Dame el código corregido de ThemeToggle.vue y los ajustes para main.css
 - **Relación problema-solución:** Se procedió a integrar el componente manualmente en la Navbar y a ajustar las variables de contraste en `main.css` específicamente para el modo claro.
 - **Resultado:** Botón funcional y legibilidad mejorada en el tema "Light".
+
+
+## [13/04/2026] - Aplicación de Clases Inteligentes en Componentes Nuxt
+- **Prompt:** Vamos a finalizar la integración del modo claro/oscuro aplicando el sistema de variables definido en main.css.
+
+Tu objetivo: Modificar mis componentes para que utilicen las clases del sistema de diseño que he creado, asegurando que la web se vea profesional en ambos modos.
+
+Instrucciones específicas por componente:
+
+Componentes de Tarjetas (Tickets/Partidos): Sustituye cualquier fondo fijo por la clase .card-dark. Asegúrate de que usen .text-main para títulos y .text-muted-custom para textos secundarios (fechas, estadios).
+
+Banner Principal (El Clàssic/Hero): Este elemento debe mantener su estética premium. Aplícale la clase .bg-premium-dark para que el fondo sea siempre oscuro y el texto siempre blanco, independientemente del modo activo.
+
+Botones de Acción: Usa .btn-primary para los botones de compra/selección y .btn-outline-neon para los secundarios.
+
+Mapa del Estadio: Si el componente del mapa se ve mal sobre el fondo claro, asegúrate de que tenga un contenedor con fondo oscuro o bordes definidos para que no pierda contraste.
+
+Inputs y Navbar: Usa .form-control-themed para el buscador y .text-nav para los enlaces de navegación.
+- **Objetivo:** Vincular la lógica del CSS con la estructura HTML de los componentes para solucionar los errores visuales de las iteraciones anteriores.
+- **Resultado:** El diseño ahora es consistente. El banner principal es oscuro y los tickets tienen relieve (shadow) en modo claro, mejorando la experiencia de usuario final.
+
+## 4. Anàlisi del resultat (Reflexió Final)
+
+### L’agent ha seguit realment la especificació?
+"En l'apartat tècnic, l'IA ha complert l'especificació sense problemes (Tailwind, LocalStorage i el sistema anti-flash). Però, a nivell visual, li ha costat captar l'estètica que buscava.
+
+### Quantes iteracions han estat necessàries?
+S'han realitzat un total de **6 iteracions**, 3 de documentació, 2 d'implementació base i 1 de correcció visual i d'errors d'entorn.
+
+### On falla més la IA (interpretació, execució, coherència)?
+La IA falla principalment en la **interpretació visual**. També presenta errors de **coherència de context** 
+
+### Has hagut de modificar la especificació o només els prompts?
+He hagut de modificar **ambdues coses**:
+* **Especificació:** Vaig haver d'actualitzar el `spec.md` per ser més precís amb el "Verde Neó" i les ombres de les targetes.
+* **Prompts:** La major part del control s'ha fet mitjançant prompts de correcció per guiar la IA en el "com" volia que es veiés el resultat final, més enllà del codi funcional.

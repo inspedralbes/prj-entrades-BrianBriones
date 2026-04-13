@@ -142,7 +142,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Navbar */
 .navbar-custom {
-  background-color: transparent !important;
+  background-color: var(--bg-color) !important;
   border-bottom: 1px solid var(--card-border);
   padding: 1.5rem 0;
 }

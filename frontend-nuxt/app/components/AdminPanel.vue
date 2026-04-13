@@ -6,7 +6,7 @@
       
       <!-- Logo / Brand -->
       <div class="sidebar-brand mb-5 px-4 pt-4 border-bottom border-secondary border-opacity-25 pb-4">
-        <h2 class="text-white fw-bold mb-0 fs-5">FastGoal Admin</h2>
+        <h2 class="text-main fw-bold mb-0 fs-5">FastGoal Admin</h2>
         <div class="text-neon" style="font-size: 0.65rem; letter-spacing: 1px;">PANELL DE CONTROL</div>
       </div>
 
@@ -47,7 +47,7 @@
       <div v-if="activeTab === 'gestio'" class="fade-in">
         <div class="mb-5 d-flex justify-content-between align-items-end">
           <div>
-            <h1 class="text-white fw-bold mb-1 fs-3">Gestió de l'Esdeveniment</h1>
+            <h1 class="text-main fw-bold mb-1 fs-3">Gestió de l'Esdeveniment</h1>
             <p class="text-muted-custom m-0" style="font-size: 0.95rem;">Crear i editar partits, tipus d'entrades i aforament.</p>
           </div>
           <button class="btn btn-primary fw-bold text-dark px-4" @click="isPanelOpen = true">
@@ -56,7 +56,7 @@
         </div>
 
         <div class="card card-dark border-0 rounded-4 p-4 shadow-lg">
-          <table class="table table-borderless text-white mb-0 align-middle">
+          <table class="table table-borderless text-main mb-0 align-middle">
             <thead>
               <tr class="text-muted-custom border-bottom border-secondary border-opacity-25" style="font-size: 0.75rem; letter-spacing: 1px;">
                 <th class="pb-3 fw-bold">ESDEVENIMENT</th>
@@ -86,7 +86,7 @@
       <!-- 3.2.2 PANELL EN TEMPS REAL -->
       <div v-if="activeTab === 'realtime'" class="fade-in">
         <div class="mb-5">
-          <h1 class="text-white fw-bold mb-1 fs-3">Panell en Temps Real</h1>
+          <h1 class="text-main fw-bold mb-1 fs-3">Panell en Temps Real</h1>
           <p class="text-muted-custom m-0" style="font-size: 0.95rem;">Monitorització del trànsit i vendes en directe de l'esdeveniment actual.</p>
         </div>
 
@@ -94,28 +94,28 @@
           <div class="col-md-3">
             <div class="card card-dark border-0 rounded-4 p-4 shadow-sm text-center h-100 border-top border-warning border-3">
               <div class="text-warning fw-bold mb-2">Usuaris Connectats</div>
-              <div class="fs-1 fw-bold text-white lh-1">{{ stats.sockets_connected || 1 }}</div>
+              <div class="fs-1 fw-bold text-main lh-1">{{ stats.sockets_connected || 1 }}</div>
               <div class="text-muted-custom small mt-2">Navegant per la web</div>
             </div>
           </div>
           <div class="col-md-3">
             <div class="card card-dark border-0 rounded-4 p-4 shadow-sm text-center h-100 border-top border-info border-3">
               <div class="text-info fw-bold mb-2">Reserves Actives (Cua)</div>
-              <div class="fs-1 fw-bold text-white lh-1">{{ stats.active_reserves_in_queue || 0 }}</div>
+              <div class="fs-1 fw-bold text-main lh-1">{{ stats.active_reserves_in_queue || 0 }}</div>
               <div class="text-muted-custom small mt-2">Pagaments en procés</div>
             </div>
           </div>
           <div class="col-md-3">
             <div class="card card-dark border-0 rounded-4 p-4 shadow-sm text-center h-100 border-top border-success border-3">
               <div class="text-success fw-bold mb-2">Compres Confirmades</div>
-              <div class="fs-1 fw-bold text-white lh-1">{{ stats.confirmed_purchases }}</div>
+              <div class="fs-1 fw-bold text-main lh-1">{{ stats.confirmed_purchases }}</div>
               <div class="text-muted-custom small mt-2">Tickets validats</div>
             </div>
           </div>
           <div class="col-md-3">
             <div class="card card-dark border-0 rounded-4 p-4 shadow-sm text-center h-100">
               <div class="text-neon fw-bold mb-2">Seients (D / R / V)</div>
-              <div class="fs-4 fw-bold text-white lh-1 mt-2">
+              <div class="fs-4 fw-bold text-main lh-1 mt-2">
                  {{ stats.available_seats }} / {{ stats.active_reserves_in_queue }} / {{ stats.sold_seats }}
               </div>
               <div class="text-muted-custom small mt-2">Disp / Reserv / Venuts</div>
@@ -125,7 +125,7 @@
 
         <!-- Fake Live log for professional look -->
         <div class="card card-dark border-0 rounded-4 p-4">
-          <h5 class="text-white mb-3 fw-bold">Activitat d'entrades en directe</h5>
+          <h5 class="text-main mb-3 fw-bold">Activitat d'entrades en directe</h5>
           <div class="d-flex flex-column gap-2 opacity-75" style="font-family: monospace; font-size: 0.85rem;">
              <div v-for="(log, idx) in activityLogs" :key="idx" :class="log.color">[{{ log.tag }}] {{ log.text }}</div>
           </div>
@@ -135,7 +135,7 @@
       <!-- 3.2.3 INFORMES -->
       <div v-if="activeTab === 'informes'" class="fade-in">
         <div class="mb-5">
-          <h1 class="text-white fw-bold mb-1 fs-3">Informes i Vendes</h1>
+          <h1 class="text-main fw-bold mb-1 fs-3">Informes i Vendes</h1>
           <p class="text-muted-custom m-0" style="font-size: 0.95rem;">Resum comptable, ocupació i evolució temporal.</p>
         </div>
 
@@ -155,8 +155,8 @@
             <div class="card card-dark border-0 rounded-4 p-4 h-100">
                <div class="text-muted-custom fw-bold mb-3">Percentatge d'Ocupació (Global)</div>
                <div class="d-flex align-items-center gap-4">
-                  <div class="fs-1 text-white fw-bold">{{ stats.occupancy_percentage }}%</div>
-                  <div class="flex-grow-1" style="height: 12px; background-color: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden;">
+                  <div class="fs-1 text-main fw-bold">{{ stats.occupancy_percentage }}%</div>
+                  <div class="flex-grow-1" style="height: 12px; background-color: rgba(128,128,128,0.2); border-radius: 6px; overflow: hidden;">
                      <div class="h-100" :style="{ width: stats.occupancy_percentage + '%', backgroundColor: 'var(--primary-neon)' }"></div>
                   </div>
                </div>
@@ -168,11 +168,11 @@
           <!-- Recaptació per tipus -->
           <div class="col-md-5">
             <div class="card card-dark border-0 rounded-4 p-4 h-100">
-              <h5 class="text-white fw-bold mb-4">Recaptació per Categoria</h5>
+              <h5 class="text-main fw-bold mb-4">Recaptació per Categoria</h5>
               <div class="d-flex flex-column gap-3">
                  <div v-for="(cat, ic) in stats.revenue_by_category" :key="ic" class="d-flex justify-content-between align-items-center border-bottom border-secondary border-opacity-25 pb-2">
                     <div class="text-muted-custom">{{ cat.zone }}</div>
-                    <div class="text-white fw-bold">{{ Number(cat.total).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' }) }}</div>
+                    <div class="text-main fw-bold">{{ Number(cat.total).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' }) }}</div>
                  </div>
                  <div v-if="!stats.revenue_by_category || stats.revenue_by_category.length === 0" class="text-muted-custom small">
                     Encara no hi ha dades de recaptació.
@@ -183,8 +183,8 @@
           <!-- Evolució Temporal MOCK -->
           <div class="col-md-7">
              <div class="card card-dark border-0 rounded-4 p-4 h-100">
-               <h5 class="text-white fw-bold mb-4">Evolució temporal de vendes</h5>
-               <div class="flex-grow-1 bg-dark bg-opacity-50 rounded-3 d-flex align-items-end p-3 gap-2" style="min-height: 200px; border: 1px dashed rgba(255,255,255,0.1);">
+               <h5 class="text-main fw-bold mb-4">Evolució temporal de vendes</h5>
+               <div class="flex-grow-1 card-dark rounded-3 d-flex align-items-end p-3 gap-2" style="min-height: 200px; border: 1px dashed rgba(128,128,128,0.2);">
                   <!-- Fake chart bars -->
                   <div title="Dilluns" style="flex:1; background-color: var(--primary-neon); height: 20%; border-radius: 4px 4px 0 0; opacity: 0.6"></div>
                   <div title="Dimarts" style="flex:1; background-color: var(--primary-neon); height: 40%; border-radius: 4px 4px 0 0; opacity: 0.7"></div>
@@ -209,31 +209,31 @@
     <!-- Right Slide Panel: Crear / Editar Esdeveniment -->
     <aside class="slide-panel d-flex flex-column" :class="{ 'is-open': isPanelOpen }">
       <div class="p-4 d-flex justify-content-between align-items-center border-bottom border-secondary border-opacity-25">
-        <h2 class="text-white fw-bold fs-4 mb-0">Crear Esdeveniment</h2>
+        <h2 class="text-main fw-bold fs-4 mb-0">Crear Esdeveniment</h2>
         <button class="btn btn-link text-muted-custom p-0" @click="isPanelOpen = false">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
       </div>
 
-      <div class="p-4 pt-4 flex-grow-1 overflow-auto bg-dark">
+      <div class="p-4 pt-4 flex-grow-1 overflow-auto bg-transparent">
         <!-- 3.2.1 Data fields -->
         <div class="mb-4">
           <label class="form-label text-neon" style="font-size: 0.75rem; letter-spacing: 1px;">INFORMACIÓ</label>
-          <input type="text" v-model="formData.name" class="form-control form-control-dark custom-input mb-3" placeholder="Nom de l'esdeveniment (ex: Final Lliga)">
+          <input type="text" v-model="formData.name" class="form-control custom-input mb-3" placeholder="Nom de l'esdeveniment (ex: Final Lliga)">
           <div class="row g-2">
-             <div class="col-6"><input type="date" v-model="formData.date" class="form-control form-control-dark custom-input"></div>
-             <div class="col-6"><input type="time" v-model="formData.time" class="form-control form-control-dark custom-input"></div>
+             <div class="col-6"><input type="date" v-model="formData.date" class="form-control custom-input"></div>
+             <div class="col-6"><input type="time" v-model="formData.time" class="form-control custom-input"></div>
           </div>
         </div>
 
         <div class="mb-4">
           <label class="form-label text-neon" style="font-size: 0.75rem; letter-spacing: 1px;">AFORAMENT</label>
-          <input type="number" v-model="formData.capacity" class="form-control form-control-dark custom-input" placeholder="Aforament Total (ex: 50000)">
+          <input type="number" v-model="formData.capacity" class="form-control custom-input" placeholder="Aforament Total (ex: 50000)">
         </div>
         
         <div class="mb-4">
           <label class="form-label text-neon" style="font-size: 0.75rem; letter-spacing: 1px;">PLÀNOL DE SEIENTS / ZONES</label>
-          <select class="form-select form-control-dark custom-input text-white">
+          <select class="form-select custom-input text-main">
             <option>Plantilla Estadi Standard (4 Zones)</option>
             <option>Plantilla Estadi Circular (8 Zones)</option>
             <option>Sense seients (General Entrada Lliure)</option>
@@ -244,8 +244,8 @@
           <label class="form-label text-neon" style="font-size: 0.75rem; letter-spacing: 1px;">CATEGORIES I PREUS</label>
           <div class="card card-dark border-0 p-3 d-flex flex-column gap-2 mt-2">
              <div v-for="(cat, k) in formData.categories" :key="k" class="d-flex gap-2">
-               <input type="text" v-model="cat.name" class="form-control form-control-dark custom-input" placeholder="Nom">
-               <input type="number" v-model="cat.price" class="form-control form-control-dark custom-input w-50" placeholder="Preu €">
+               <input type="text" v-model="cat.name" class="form-control custom-input" placeholder="Nom">
+               <input type="number" v-model="cat.price" class="form-control custom-input w-50" placeholder="Preu €">
              </div>
              <button class="btn btn-sm btn-outline-secondary mt-2 border-dashed" @click="formData.categories.push({name:'', price:''})">+ Afegir Categoria</button>
           </div>
@@ -253,8 +253,8 @@
 
       </div>
 
-      <div class="p-4 border-top border-secondary border-opacity-25 d-flex gap-3 mt-auto bg-dark">
-        <button class="btn border-secondary text-white fw-bold py-2 px-4 shadow-sm" @click="isPanelOpen = false">Cancel·lar</button>
+      <div class="p-4 border-top border-secondary border-opacity-25 d-flex gap-3 mt-auto bg-transparent">
+        <button class="btn border-secondary text-main fw-bold py-2 px-4 shadow-sm" @click="isPanelOpen = false">Cancel·lar</button>
         <button class="btn btn-primary fw-bold py-2 px-4 flex-grow-1 text-dark shadow-sm" @click="submitEvent">Guardar Esdeveniment</button>
       </div>
     </aside>
@@ -373,8 +373,8 @@ const formatDate = (dateString) => {
 
 .admin-sidebar {
   width: 270px;
-  background-color: rgba(0,0,0,0.3); 
-  border-right: 1px solid rgba(255,255,255,0.05);
+  background-color: var(--card-bg-light); 
+  border-right: 1px solid rgba(128,128,128,0.2);
 }
 
 .nav-item {
@@ -391,7 +391,7 @@ const formatDate = (dateString) => {
 }
 
 .nav-item:hover {
-  background-color: rgba(255,255,255,0.03);
+  background-color: rgba(128,128,128,0.1);
   color: var(--text-main);
 }
 
@@ -431,11 +431,11 @@ const formatDate = (dateString) => {
   right: -450px;
   width: 450px;
   height: 100vh;
-  background-color: #0b1121; 
+  background-color: var(--bg-color); 
   box-shadow: -10px 0 30px rgba(0,0,0,0.5);
   z-index: 1050;
   transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  border-left: 1px solid rgba(255,255,255,0.05);
+  border-left: 1px solid rgba(128,128,128,0.2);
 }
 
 .slide-panel.is-open {
@@ -454,9 +454,9 @@ const formatDate = (dateString) => {
 }
 
 .custom-input {
-  background-color: #030712 !important; 
-  border: 1px solid rgba(255,255,255,0.1) !important;
-  color: white !important;
+  background-color: var(--card-bg) !important; 
+  border: 1px solid rgba(128,128,128,0.3) !important;
+  color: var(--text-main) !important;
   padding: 10px 14px;
 }
 .custom-input:focus {
@@ -464,6 +464,7 @@ const formatDate = (dateString) => {
   box-shadow: 0 0 0 0.1rem rgba(44, 235, 112, 0.25);
 }
 .border-dashed {
-  border: 1px dashed rgba(255,255,255,0.3) !important;
+  border: 1px dashed rgba(128,128,128,0.5) !important;
+  color: var(--text-main);
 }
 </style>

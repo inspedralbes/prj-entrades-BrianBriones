@@ -20,7 +20,7 @@
       </div>
       
       <!-- Legend -->
-      <div class="d-flex gap-3 align-items-center card-dark px-3 py-2 rounded-pill mt-3 mt-md-0" style="background-color: var(--card-bg) !important; border: 1px solid var(--card-border) !important;">
+      <div class="d-flex gap-3 align-items-center card-dark px-3 py-2 rounded-pill mt-3 mt-md-0">
         <div class="legend-item"><span class="legend-dot free"></span> Lliure</div>
         <div class="legend-item"><span class="legend-dot occupied"></span> Ocupat</div>
         <div class="legend-item"><span class="legend-dot locked"></span> Reservat per un altre</div>
@@ -54,7 +54,7 @@
               <div class="seat-grid horizontal p-2 rounded-3 bg-opacity-10 bg-black">
                 <div v-for="n in 40" :key="`lat-${n}`" 
                      class="seat-dot" 
-                     :class="getSeatState('lateral', n)" 
+                     :class="seatStates.lateral[n - 1] === 1 ? 'occupied' : seatStates.lateral[n - 1] === 2 ? 'selected' : seatStates.lateral[n - 1] === 3 ? 'locked' : 'free'" 
                      @click="toggleSeat({id: `lat-${n}`, zone: 'LATERAL', sector: 204, row: Math.ceil(n/10), num: n, price: 125}, 'lateral', n)"></div>
               </div>
             </div>
@@ -64,7 +64,7 @@
               <div class="seat-grid horizontal p-2 rounded-3 bg-opacity-10 bg-black">
                 <div v-for="n in 40" :key="`trib-${n}`" 
                      class="seat-dot" 
-                     :class="getSeatState('tribuna', n)" 
+                     :class="seatStates.tribuna[n - 1] === 1 ? 'occupied' : seatStates.tribuna[n - 1] === 2 ? 'selected' : seatStates.tribuna[n - 1] === 3 ? 'locked' : 'free'" 
                      @click="toggleSeat({id: `trib-${n}`, zone: 'TRIBUNA', sector: 110, row: Math.ceil(n/10), num: n, price: 150}, 'tribuna', n)"></div>
               </div>
               <div class="block-label mt-2 text-center text-muted-custom fw-bold">TRIBUNA</div>
@@ -75,7 +75,7 @@
               <div class="seat-grid vertical p-2 rounded-3 bg-opacity-10 bg-black">
                 <div v-for="n in 24" :key="`goln-${n}`" 
                      class="seat-dot" 
-                     :class="getSeatState('golNord', n)" 
+                     :class="seatStates.golNord[n - 1] === 1 ? 'occupied' : seatStates.golNord[n - 1] === 2 ? 'selected' : seatStates.golNord[n - 1] === 3 ? 'locked' : 'free'" 
                      @click="toggleSeat({id: `goln-${n}`, zone: 'GOL NORD', sector: 102, row: Math.ceil(n/4), num: n, price: 85}, 'golNord', n)"></div>
               </div>
             </div>
@@ -85,7 +85,7 @@
               <div class="seat-grid vertical p-2 rounded-3 bg-opacity-10 bg-black">
                 <div v-for="n in 24" :key="`gols-${n}`" 
                      class="seat-dot" 
-                     :class="getSeatState('golSud', n)" 
+                     :class="seatStates.golSud[n - 1] === 1 ? 'occupied' : seatStates.golSud[n - 1] === 2 ? 'selected' : seatStates.golSud[n - 1] === 3 ? 'locked' : 'free'" 
                      @click="toggleSeat({id: `gols-${n}`, zone: 'GOL SUD', sector: 112, row: Math.ceil(n/4), num: n, price: 85}, 'golSud', n)"></div>
               </div>
             </div>
@@ -93,7 +93,7 @@
           </div>
 
           <!-- Zoom Controls -->
-          <div class="zoom-controls position-absolute bottom-0 start-50 translate-middle-x mb-4 d-flex gap-2 p-1 rounded-3" style="background-color: var(--card-bg-light); border: 1px solid rgba(255,255,255,0.05);">
+          <div class="zoom-controls position-absolute bottom-0 start-50 translate-middle-x mb-4 d-flex gap-2 p-1 rounded-3 card-dark shadow-sm">
              <button class="btn btn-sm btn-dark bg-transparent border-0 zoom-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg></button>
              <button class="btn btn-sm btn-dark bg-transparent border-0 zoom-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg></button>
              <button class="btn btn-sm btn-dark bg-transparent border-0 zoom-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></button>
@@ -232,7 +232,7 @@ const setSeatStateById = (id, state) => {
   const zone = mapIdToZone[parts[0]];
   const index = parseInt(parts[1], 10);
   if (zone && index) {
-     seatStates.value[zone][index - 1] = state;
+     seatStates.value[zone].splice(index - 1, 1, state);
      
      // Si cambiaron el estado a 3 y lo teniamos seleccionado, removerlo!
      if (state === 3) {
@@ -273,23 +273,23 @@ onMounted(() => {
      // Como no guardamos ocupado fijo dinamicamente aquí, lo volvemos 0
      setSeatStateById(seatId, 0);
   });
+
+  socket.on('seatLockFailed', ({ seatId }) => {
+     setSeatStateById(seatId, 3);
+     showAlert('Aquesta entrada acaba de ser reservada per un altre usuari!');
+  });
 });
 
 onUnmounted(() => {
   socket.off('initialLocks');
   socket.off('seatLocked');
   socket.off('seatUnlocked');
+  socket.off('seatLockFailed');
   socket.off('initialOccupied');
   socket.off('seatsOccupied');
 });
 
-const getSeatState = (zone, index) => {
-  const state = seatStates.value[zone][index - 1];
-  if (state === 1) return 'occupied';
-  if (state === 2) return 'selected';
-  if (state === 3) return 'locked';
-  return 'free';
-};
+// getSeatState can be safely removed or kept empty since it's now inline
 
 const toggleSeat = (seatData, zone, index) => {
   const currentState = seatStates.value[zone][index - 1];
@@ -302,8 +302,9 @@ const toggleSeat = (seatData, zone, index) => {
   }
 
   if (currentState === 2) {
-    seatStates.value[zone][index - 1] = 0;
+    seatStates.value[zone].splice(index - 1, 1, 0);
     selectedSeatsList.value = selectedSeatsList.value.filter(s => s.id !== seatData.id);
+    if (props.match) socket.emit('unlockSeat', { matchId: props.match.id, seatId: seatData.id });
   } else {
     // Check limit
     if (selectedSeatsList.value.length >= 8) {
@@ -311,14 +312,16 @@ const toggleSeat = (seatData, zone, index) => {
        return;
     }
     
-    seatStates.value[zone][index - 1] = 2;
+    seatStates.value[zone].splice(index - 1, 1, 2);
     selectedSeatsList.value.push({ ...seatData, list: zone, index });
+    if (props.match) socket.emit('lockSeat', { matchId: props.match.id, seatId: seatData.id });
   }
 };
 
 const removeSeatFromList = (seat) => {
-  seatStates.value[seat.list][seat.index - 1] = 0;
+  seatStates.value[seat.list].splice(seat.index - 1, 1, 0);
   selectedSeatsList.value = selectedSeatsList.value.filter(s => s.id !== seat.id);
+  if (props.match) socket.emit('unlockSeat', { matchId: props.match.id, seatId: seat.id });
 };
 
 // Computed totals
@@ -368,8 +371,8 @@ const emitConfirm = () => {
   display: inline-block;
 }
 .legend-dot.free { background-color: var(--primary-neon); }
-.legend-dot.occupied { background-color: var(--card-bg-light); border: 1px solid rgba(255,255,255,0.1); cursor: not-allowed; }
-.legend-dot.locked { background-color: var(--bs-warning); }
+.legend-dot.occupied { background-color: var(--card-bg-light); border: 1px solid rgba(128,128,128,0.3); cursor: not-allowed; }
+.legend-dot.locked { background-color: #ff8c00 !important; }
 .legend-dot.selected { background-color: #fff; box-shadow: 0 0 10px rgba(255,255,255,0.5); }
 
 /* Pitch Background CSS */
@@ -425,8 +428,8 @@ const emitConfirm = () => {
   z-index: 10;
 }
 .seat-dot.free { background-color: var(--primary-neon); }
-.seat-dot.occupied { background-color: rgba(255,255,255,0.1); cursor: not-allowed; }
-.seat-dot.locked { background-color: var(--bs-warning); opacity: 0.8; cursor: not-allowed; }
+.seat-dot.occupied { background-color: rgba(128,128,128,0.2); cursor: not-allowed; }
+.seat-dot.locked { background-color: #ff8c00 !important; opacity: 1 !important; cursor: not-allowed !important; }
 .seat-dot.selected { 
   background-color: #fff; 
   box-shadow: 0 0 10px rgba(255,255,255,0.6); 

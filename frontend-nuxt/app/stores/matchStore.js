@@ -20,16 +20,18 @@ export const useMatchStore = defineStore('match', {
         this.loading = false;
       }
     },
-    async fetchMatch(id) {
-      this.loading = true;
-      this.currentMatch = null;
+    async fetchMatch(id, silent = false) {
+      if (!silent) {
+         this.loading = true;
+         this.currentMatch = null;
+      }
       try {
         const response = await api.getMatch(id);
         this.currentMatch = response.data ? response.data : response;
       } catch (err) {
         this.error = err.message;
       } finally {
-        this.loading = false;
+        if (!silent) this.loading = false;
       }
     }
   }

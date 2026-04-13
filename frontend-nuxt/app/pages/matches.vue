@@ -18,13 +18,6 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
        <div class="d-flex gap-2">
          <button class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">Tots els partits</button>
-         <button class="btn btn-outline-secondary rounded-pill px-4 fw-bold border-secondary text-white">Lliga</button>
-         <button class="btn btn-outline-secondary rounded-pill px-4 fw-bold border-secondary text-white">Copa</button>
-       </div>
-       <div>
-         <button class="btn btn-outline-secondary rounded-pill px-4 text-white border-secondary bg-dark shadow-sm">
-           <span class="me-2">≡</span> Ordena per data
-         </button>
        </div>
     </div>
     

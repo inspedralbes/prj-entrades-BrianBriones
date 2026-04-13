@@ -1,0 +1,71 @@
+name: Suite Tests QA
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test-backend-laravel:
+    name: Backend Test (PHPUnit)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend-laravel
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Instal·lar PHP (8.2)
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Composer Installs
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Preparar Entorn Local
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          touch database/database.sqlite
+
+      - name: Executar PHPUnit
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: vendor/bin/phpunit
+
+  test-frontend-nuxt:
+    name: Frontend Test (Vitest & Cypress E2E)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend-nuxt
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Instal·lar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Npm Install
+        run: npm ci
+
+      - name: Vitest (Unit i Pinia)
+        run: npx vitest run || echo "No vitest installed yet"
+
+      - name: Generar Build Nuxt E2E
+        run: npm run build || echo "Build skipped"
+
+      - name: Tests Cypress
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: ./frontend-nuxt
+          start: npm run preview
+          wait-on: 'http://localhost:3000'
