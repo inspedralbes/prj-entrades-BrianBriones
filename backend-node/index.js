@@ -273,6 +273,26 @@ app.get('/api/matches', async (req, res) => {
        };
     });
     
+    try {
+      const laravelRes = await axios.get(`${LARAVEL_URL}/api/matches`);
+      const laravelMatches = laravelRes.data.data ? laravelRes.data.data : laravelRes.data;
+      
+      if (Array.isArray(laravelMatches)) {
+         // Filtrar los que son creados por admin (IDs altos o manuales)
+         const customMatches = laravelMatches.filter(m => parseInt(m.id) >= 9000000).map(m => ({
+            id: m.id.toString(),
+            home_team: m.home_team,
+            away_team: m.away_team,
+            stadium: m.stadium || 'Estadi Personalitzat',
+            date: m.date
+         }));
+         
+         matches.unshift(...customMatches);
+      }
+    } catch(e) {
+      console.error('Error obteniendo matches custom de Laravel:', e.message);
+    }
+    
     res.status(200).json(matches);
   } catch (error) {
     console.error('Error fetching external API:', error.message);
@@ -285,20 +305,43 @@ app.get('/api/matches/:id', async (req, res) => {
     const { id } = req.params;
     
     let event = null;
-    const mockMatch = MOCK_MATCHES.find(m => m.idEvent === id);
+    let isCustom = false;
+    let customData = null;
     
-    if (mockMatch) {
-      event = mockMatch;
+    if (parseInt(id) >= 9000000) {
+       isCustom = true;
+       try {
+          const laravelRes = await axios.get(`${LARAVEL_URL}/api/matches/${id}`);
+          customData = laravelRes.data.data || laravelRes.data;
+       } catch(e) {
+          console.error("Error al buscar partido custom en Laravel", e.message);
+       }
     } else {
-      const sportsRes = await axios.get(`https://www.thesportsdb.com/api/v1/json/3/lookupevent.php?id=${id}`);
-      event = sportsRes.data.events ? sportsRes.data.events[0] : null;
+       const mockMatch = MOCK_MATCHES.find(m => m.idEvent === id);
+       if (mockMatch) {
+         event = mockMatch;
+       } else {
+         const sportsRes = await axios.get(`https://www.thesportsdb.com/api/v1/json/3/lookupevent.php?id=${id}`);
+         event = sportsRes.data.events ? sportsRes.data.events[0] : null;
+       }
     }
     
-    if (!event) {
+    if (!event && !isCustom) {
       return res.status(404).json({ message: 'Partido no encontrado en TheSportsDB ni en mock' });
     }
+    
+    if (isCustom && !customData) {
+      return res.status(404).json({ message: 'Partido custom no encontrado en Laravel' });
+    }
 
-    const matchData = {
+    const matchData = isCustom ? {
+      id: customData.id.toString(),
+      home_team: customData.home_team,
+      away_team: customData.away_team,
+      stadium: customData.stadium || 'Estadi Personalitzat',
+      date: customData.date,
+      tickets: []
+    } : {
       id: event.idEvent,
       home_team: event.strHomeTeam,
       away_team: event.strAwayTeam,

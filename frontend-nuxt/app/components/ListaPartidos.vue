@@ -1,7 +1,7 @@
 <template>
   <div class="row g-4">
     <div v-for="match in matches" :key="match.id" class="col-md-6 col-xl-4">
-      <div class="card card-dark h-100 shadow-sm border-0 bg-transparent rounded-4 overflow-hidden d-flex flex-column" style="background-color: var(--card-bg) !important;">
+      <div class="card card-dark h-100 shadow-sm border-0 bg-transparent rounded-4 overflow-hidden d-flex flex-column">
         
         <!-- Top bar (Liga info + Availability) -->
         <div class="d-flex justify-content-between align-items-center px-4 pt-4 pb-2">
@@ -17,13 +17,13 @@
               <div class="bg-dark rounded-circle border border-secondary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
               </div>
-              <h4 class="card-title fw-bold mb-0 text-white" style="line-height: 1.1;">{{ match.home_team }}</h4>
+              <h4 class="card-title fw-bold mb-0 text-main" style="line-height: 1.1;">{{ match.home_team }}</h4>
            </div>
            
            <span class="text-muted-custom small fw-bold mx-2">VS</span>
            
            <div class="d-flex align-items-center justify-content-end gap-2 text-end" style="width: 40%;">
-              <h4 class="card-title fw-bold mb-0 text-white" style="line-height: 1.1;">{{ match.away_team }}</h4>
+              <h4 class="card-title fw-bold mb-0 text-main" style="line-height: 1.1;">{{ match.away_team }}</h4>
               <div class="bg-dark rounded-circle border border-secondary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
               </div>

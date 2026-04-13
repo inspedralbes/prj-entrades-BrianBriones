@@ -11,9 +11,11 @@
     </div>
 
     <!-- Header -->
-    <div class="mb-5">
-      <h1 class="text-white fw-bold mb-2" style="font-size: 2.5rem; letter-spacing: -1px;">Resum de la teva compra</h1>
-      <p class="text-muted-custom fs-5">Revisa els detalls abans de finalitzar la transacció.</p>
+    <div class="mb-5 d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <h1 class="text-main fw-bold mb-2" style="font-size: 2.5rem; letter-spacing: -1px;">Resum de la teva compra</h1>
+        <p class="text-muted-custom fs-5 mb-0">Revisa els detalls abans de finalitzar la transacció.</p>
+      </div>
     </div>
 
     <div class="row g-4 mb-5">
@@ -28,7 +30,7 @@
           <div class="d-flex justify-content-between align-items-start mb-4">
             <div>
               <div class="text-neon fw-bold mb-1" style="font-size: 0.65rem; letter-spacing: 2px;">PROPER PARTIT</div>
-              <h2 class="text-white fw-bold mb-1" style="letter-spacing: -0.5px;">{{ match?.home_team || 'Equip Local' }} vs {{ match?.away_team || 'Equip Visitant' }}</h2>
+              <h2 class="text-main fw-bold mb-1" style="letter-spacing: -0.5px;">{{ match?.home_team || 'Equip Local' }} vs {{ match?.away_team || 'Equip Visitant' }}</h2>
               <div class="text-muted-custom" style="font-size: 0.9rem;">Lliga EA Sports</div>
             </div>
             <div class="text-neon">
@@ -44,11 +46,11 @@
           <div class="row g-4 mb-5 pb-3"> <!-- Added pb-3 to give more space before the footer line -->
             <div class="col-sm-6 col-md-4">
               <div class="text-muted-custom fw-bold mb-1" style="font-size: 0.65rem; letter-spacing: 1px;">ESTADI</div>
-              <div class="text-white fw-medium lh-sm px-1">{{ match?.stadium || 'Estadi Olímpic' }}</div>
+              <div class="text-main fw-medium lh-sm px-1">{{ match?.stadium || 'Estadi Olímpic' }}</div>
             </div>
             <div class="col-sm-6 col-md-4">
               <div class="text-muted-custom fw-bold mb-1" style="font-size: 0.65rem; letter-spacing: 1px;">DATA I HORA</div>
-              <div class="text-white fw-medium lh-sm px-1">{{ formatDate(match?.date) }}</div>
+              <div class="text-main fw-medium lh-sm px-1">{{ formatDate(match?.date) }}</div>
             </div>
             <div class="col-sm-6 col-md-4">
               <div class="text-muted-custom fw-bold mb-1" style="font-size: 0.65rem; letter-spacing: 1px;">ZONA</div>
@@ -56,11 +58,11 @@
             </div>
             <div class="col-sm-6 col-md-4">
               <div class="text-muted-custom fw-bold mb-1" style="font-size: 0.65rem; letter-spacing: 1px;">QUANTITAT</div>
-              <div class="text-white fw-medium px-1">{{ seats?.length || 2 }} Entrades</div>
+              <div class="text-main fw-medium px-1">{{ seats?.length || 2 }} Entrades</div>
             </div>
             <div class="col-sm-6 col-md-8">
               <div class="text-muted-custom fw-bold mb-1" style="font-size: 0.65rem; letter-spacing: 1px;">CADIRA</div>
-              <div class="text-white fw-medium px-1">Fila 12, Seients 44-45</div>
+              <div class="text-main fw-medium px-1">Fila 12, Seients 44-45</div>
             </div>
           </div>
 
@@ -76,7 +78,7 @@
             </div>
             <div class="text-end">
               <div class="text-muted-custom fw-bold mb-1" style="font-size: 0.65rem; letter-spacing: 1px;">PREU TOTAL ENTRADES</div>
-              <div class="text-white fw-bold fs-3 lh-1">{{ subtotal }} €</div>
+              <div class="text-main fw-bold fs-3 lh-1">{{ subtotal }} €</div>
             </div>
           </div>
         </div>
@@ -90,7 +92,7 @@
              </svg>
            </div>
            <div>
-             <h4 class="text-white fw-bold mb-1" style="font-size: 1rem;">Garantia de seguretat</h4>
+             <h4 class="text-main fw-bold mb-1" style="font-size: 1rem;">Garantia de seguretat</h4>
              <div class="text-muted-custom" style="font-size: 0.85rem; line-height: 1.4;">
                Les teves entrades són 100% autèntiques i estan protegides pel sistema de xifrat de FastGoal Tickets.
              </div>
@@ -102,34 +104,64 @@
       <!-- Right Column: Payment Details -->
       <div class="col-xl-5">
         <div class="card card-dark border-0 rounded-4 p-4 p-md-5 shadow-lg h-100 d-flex flex-column" style="background-color: var(--card-bg);">
-          <h3 class="text-white fw-bold mb-4" style="font-size: 1.3rem;">Detall del pagament</h3>
+          <h3 class="text-main fw-bold mb-4" style="font-size: 1.3rem;">Detall del pagament</h3>
           
-          <div class="d-flex flex-column gap-3 mb-4 flex-grow-1">
-            <div class="d-flex justify-content-between align-items-center text-muted-custom fs-6">
-              <span>{{ seats?.length || 2 }}× Entrades</span>
-              <span class="text-white">{{ subtotal }} €</span>
+          <form @submit.prevent="emitPay" class="flex-grow-1 d-flex flex-column">
+            <!-- Totals Breakdowns -->
+            <div class="d-flex flex-column gap-3 mb-4">
+              <div class="d-flex justify-content-between align-items-center text-muted-custom fs-6">
+                <span>{{ seats?.length || 2 }}× Entrades</span>
+                <span class="text-main">{{ subtotal }} €</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center text-muted-custom fs-6">
+                <span>Despeses de gestió</span>
+                <span class="text-main">12,50 €</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center text-muted-custom fs-6">
+                <span>IVA (21%)</span>
+                <span class="text-main">63,52 €</span>
+              </div>
             </div>
-            <div class="d-flex justify-content-between align-items-center text-muted-custom fs-6">
-              <span>Despeses de gestió</span>
-              <span class="text-white">12,50 €</span>
-            </div>
-            <div class="d-flex justify-content-between align-items-center text-muted-custom fs-6">
-              <span>IVA (21%)</span>
-              <span class="text-white">63,52 €</span>
-            </div>
-          </div>
 
-          <!-- Total Callout -->
-          <div class="rounded-3 p-4 mb-4 d-flex justify-content-between align-items-center" style="background-color: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
-            <div class="text-white fw-bold fs-5">Total a pagar</div>
-            <div class="text-neon fw-bold" style="font-size: 2rem; line-height: 1; letter-spacing: -1px;">{{ grandTotal }} €</div>
-          </div>
+            <!-- Total Callout -->
+            <div class="rounded-3 p-4 mb-4 d-flex justify-content-between align-items-center" style="background-color: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
+              <div class="text-main fw-bold fs-5">Total a pagar</div>
+              <div class="text-neon fw-bold" style="font-size: 2rem; line-height: 1; letter-spacing: -1px;">{{ grandTotal }} €</div>
+            </div>
 
-          <!-- Proceed Button -->
-          <button @click="emitPay" class="btn btn-primary w-100 py-3 fw-bold rounded-3 shadow-none text-dark d-flex justify-content-center align-items-center gap-2 mb-4" style="font-size: 1.05rem; letter-spacing: 0.5px;">
-             Continuar al pagament
-             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-          </button>
+            <!-- Fake Credit Card Form -->
+            <div class="mb-4">
+              <h5 class="text-main fw-bold mb-3 fs-6">Dades de pagament</h5>
+              
+              <div class="mb-3">
+                <label class="text-muted-custom small fw-bold mb-1">Nom del titular</label>
+                <input type="text" class="form-control bg-transparent text-main" style="border-color: rgba(128,128,128,0.3);" placeholder="Ex: Joan Garcia" required minlength="3">
+              </div>
+              
+              <div class="mb-3 position-relative">
+                <label class="text-muted-custom small fw-bold mb-1">Número de targeta</label>
+                <input type="text" class="form-control bg-transparent text-main ps-5" style="border-color: rgba(128,128,128,0.3);" placeholder="16 dígits seguits (ex: 4500123456789012)" required pattern="\d{16}" maxlength="16" title="16 números seguits sense espais">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="position-absolute text-muted-custom" style="top: 35px; left: 12px;"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+              </div>
+              
+              <div class="row g-2 mb-3">
+                <div class="col-6">
+                  <label class="text-muted-custom small fw-bold mb-1">Data d'expiració</label>
+                  <input type="text" class="form-control bg-transparent text-main" style="border-color: rgba(128,128,128,0.3);" placeholder="MM/AA (ex: 12/28)" required pattern="(0[1-9]|1[0-2])\/\d{2}" maxlength="5">
+                </div>
+                <div class="col-6">
+                  <label class="text-muted-custom small fw-bold mb-1">Codi CVV</label>
+                  <input type="text" class="form-control bg-transparent text-main" style="border-color: rgba(128,128,128,0.3);" placeholder="Ex: 123" required pattern="\d{3,4}" maxlength="4">
+                </div>
+              </div>
+            </div>
+
+            <!-- Proceed Button -->
+            <button type="submit" class="btn btn-primary w-100 py-3 fw-bold rounded-3 shadow-none text-dark d-flex justify-content-center align-items-center gap-2 mb-4" style="font-size: 1.05rem; letter-spacing: 0.5px;">
+               Finalitzar i Pagar
+               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
+          </form>
           
           <!-- Payment Icons & Security string -->
           <div class="text-center mt-auto">
@@ -150,35 +182,7 @@
     </div>
 
     <!-- Upsell Section -->
-    <div class="mt-2">
-      <h3 class="text-white fw-bold mb-4" style="font-size: 1.4rem;">També et pot interessar</h3>
-      
-      <div class="row g-4">
-        <!-- Upgrade Card -->
-        <div class="col-md-6">
-          <div class="card border-0 rounded-4 overflow-hidden position-relative h-100 upgrade-card">
-            <!-- Simulated background image with CSS gradients -->
-            <div class="position-absolute w-100 h-100 top-0 start-0 z-0 bg-image" style="background: linear-gradient(180deg, rgba(11, 17, 33, 0) 0%, rgba(11, 17, 33, 0.9) 100%), linear-gradient(45deg, #1e3a8a, #0b1121); opacity: 0.8;"></div>
-            
-            <div class="position-relative z-1 p-4 d-flex flex-column h-100 justify-content-end">
-              <div class="text-warning fw-bold mb-2" style="font-size: 0.7rem; letter-spacing: 2px;">UPGRADE</div>
-              <h4 class="text-white fw-bold mb-1 fs-4">Accés VIP Lounge</h4>
-              <p class="text-white-50 mb-0" style="font-size: 0.9rem;">Càtering exclusiu i vistes panoràmiques.</p>
-              
-              <!-- Subtle red/orange edge accent -->
-              <div class="position-absolute bottom-0 start-0 w-100" style="height: 3px; background: linear-gradient(90deg, #ea580c 0%, transparent 50%);"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Empty Offers Card -->
-        <div class="col-md-6">
-          <div class="card border-0 rounded-4 d-flex align-items-center justify-content-center text-center p-5 h-100 text-muted-custom" style="background-color: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1) !important; min-height: 160px;">
-            <em style="font-size: 0.95rem;">Més ofertes d'ampliació properament</em>
-          </div>
-        </div>
-      </div>
-    </div>
+    
 
   </div>
 </template>
@@ -197,7 +201,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['pay']);
+const emit = defineEmits(['pay', 'timeout']);
 
 const emitPay = () => {
   emit('pay');

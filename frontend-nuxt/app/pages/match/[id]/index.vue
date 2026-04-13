@@ -20,7 +20,7 @@
             <div class="logo-backdrop"></div>
             <img src="/img/home_player.png" alt="Home Team" class="team-player-img" />
           </div>
-          <h1 class="team-name text-white fw-bold mb-0 text-uppercase">{{ matchStore.currentMatch.home_team }}</h1>
+          <h1 class="team-name text-main fw-bold mb-0 text-uppercase">{{ matchStore.currentMatch.home_team }}</h1>
         </div>
         
         <!-- VS -->
@@ -37,7 +37,7 @@
             <div class="logo-backdrop"></div>
             <img src="/img/away_player.png" alt="Away Team" class="team-player-img" />
           </div>
-          <h1 class="team-name text-white fw-bold mb-0 text-uppercase">{{ matchStore.currentMatch.away_team }}</h1>
+          <h1 class="team-name text-main fw-bold mb-0 text-uppercase">{{ matchStore.currentMatch.away_team }}</h1>
         </div>
       </div>
 
@@ -51,8 +51,7 @@
             <!-- Data -->
             <div class="col-md-4">
               <div class="card bg-dark border-0 rounded-4 p-3 h-100 card-dark-custom">
-                <div class="d-flex align-items-center mb-2">
-                  <span class="text-neon fs-6 me-2">📅</span>
+                <div class="d-flex align-items-center mb-2"> 
                   <span class="text-muted-custom fw-bold" style="font-size: 0.75rem; letter-spacing: 1px;">DATA</span>
                 </div>
                 <h5 class="text-white fw-bold mb-0">{{ formatDate(matchStore.currentMatch.date) }}</h5>
@@ -62,7 +61,7 @@
             <div class="col-md-4">
               <div class="card bg-dark border-0 rounded-4 p-3 h-100 card-dark-custom">
                 <div class="d-flex align-items-center mb-2">
-                  <span class="text-neon fs-6 me-2">🕒</span>
+
                   <span class="text-muted-custom fw-bold" style="font-size: 0.75rem; letter-spacing: 1px;">HORARI</span>
                 </div>
                 <h5 class="text-white fw-bold mb-0">{{ formatTime(matchStore.currentMatch.date) }} CET</h5>
@@ -72,7 +71,7 @@
             <div class="col-md-4">
               <div class="card bg-dark border-0 rounded-4 p-3 h-100 card-dark-custom">
                 <div class="d-flex align-items-center mb-2">
-                  <span class="text-neon fs-6 me-2">🏟️</span>
+
                   <span class="text-muted-custom fw-bold" style="font-size: 0.75rem; letter-spacing: 1px;">ESTADI</span>
                 </div>
                 <h5 class="text-white fw-bold mb-0">{{ matchStore.currentMatch.stadium }}</h5>
@@ -85,7 +84,7 @@
             <img src="/img/stadium_map.png" class="stadium-map-img w-100" alt="Stadium Map" style="height: 380px; object-fit: cover;" />
             <div class="stadium-overlay position-absolute bottom-0 start-0 w-100 p-4">
               <h4 class="text-white fw-bold mb-1">Mapa de l'Estadi</h4>
-              <p class="text-light mb-0 opacity-75 fw-light" style="font-size: 0.95rem;">Explora les millors zones per gaudir del partit</p>
+
             </div>
           </div>
           
@@ -105,21 +104,13 @@
             
             <!-- Viewers badge -->
             <div class="d-flex justify-content-center align-items-center rounded-3 py-2 px-3 mb-4 viewers-badge">
-              <span class="text-neon fw-bold" style="font-size: 0.85rem;">👁️ {{ viewers }} persones estan mirant aquest partit</span>
+              <span class="text-neon fw-bold" style="font-size: 0.85rem;"> {{ viewers }} persones estan mirant aquest partit</span>
             </div>
             
             <p class="text-muted-custom mb-1" style="font-size: 0.85rem;">Preus des de</p>
             <div class="d-flex align-items-end mb-4">
               <h1 class="text-neon fw-bold mb-0 lh-1" style="font-size: 3.5rem;">85€</h1>
               <span class="text-muted-custom ms-2 pb-2" style="font-size: 0.9rem;">/ entrada</span>
-            </div>
-            
-            <div class="alert custom-alert border-0 rounded-3 p-3 mb-4 d-flex flex-column gap-1">
-              <div class="d-flex align-items-center">
-                <span class="fw-bold me-2 fs-6">⚠️</span>
-                <span class="fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">DISPONIBILITAT MOLT LIMITADA</span>
-              </div>
-              <p class="mb-0 text-white fw-bold" style="font-size: 0.95rem;">Només queden 5 entrades</p>
             </div>
             
             <!-- Zones List -->
@@ -138,8 +129,7 @@
               </div>
             </div>
             
-            <NuxtLink :to="`/match/${route.params.id}/tickets`" class="btn btn-neon w-100 py-3 rounded-2 fw-bold text-dark mt-2 mb-4 d-flex justify-content-center align-items-center" style="font-size: 1.05rem;">
-              <span class="me-2 fs-5">💺</span> Seleccionar Seients
+            <NuxtLink :to="`/match/${route.params.id}/tickets`" class="btn btn-neon w-100 py-3 rounded-2 fw-bold text-dark mt-2 mb-4 d-flex justify-content-center align-items-center" style="font-size: 1.05rem;"> Seleccionar Seients
             </NuxtLink>
             
             <p class="text-center text-muted-custom mb-0" style="font-size: 0.7rem; line-height: 1.5;">

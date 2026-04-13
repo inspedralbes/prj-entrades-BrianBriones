@@ -1,7 +1,7 @@
 <template>
   <div class="row justify-content-center">
     <div class="col-md-10">
-      <h2 class="mb-4 fw-bold border-bottom pb-2 text-white">Les meves entrades</h2>
+      <h2 class="mb-4 fw-bold border-bottom pb-2 text-main">Les meves entrades</h2>
 
       <div v-if="loading" class="text-center py-5">
         <div class="spinner-border text-primary" role="status"></div>
@@ -13,24 +13,24 @@
       </div>
 
       <div v-else-if="orders.length === 0" class="text-center py-5">
-        <svg class="opacity-50 mb-3" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <svg class="opacity-50 mb-3 text-muted-custom" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
           <line x1="16" y1="2" x2="16" y2="6"></line>
           <line x1="8" y1="2" x2="8" y2="6"></line>
           <line x1="3" y1="10" x2="21" y2="10"></line>
         </svg>
-        <h4 class="text-white">Aún no has comprado ninguna entrada.</h4>
+        <h4 class="text-main">Aún no has comprado ninguna entrada.</h4>
         <p class="text-muted-custom">Explora los próximos partidos y vive la pasión en directo.</p>
         <NuxtLink to="/matches" class="btn btn-outline-neon mt-3 rounded-pill px-4">Veure Partits</NuxtLink>
       </div>
 
       <div v-else class="d-flex flex-column gap-3">
-        <div v-for="order in orders" :key="order.id" class="card border-0 rounded-4 shadow-sm overflow-hidden" style="background-color: var(--card-bg);">
-          <div class="card-header border-secondary border-opacity-10 py-3" style="background-color: var(--card-bg-light);">
+        <div v-for="order in orders" :key="order.id" class="card card-dark border-0 rounded-4 shadow-sm overflow-hidden">
+          <div class="card-header border-secondary border-opacity-10 py-3" style="background-color: rgba(128,128,128,0.1);">
             <div class="d-flex justify-content-between align-items-center">
               <div>
                 <span class="badge bg-success mb-2">Completada</span>
-                <h5 class="mb-0 text-white fw-bold">{{ order.match?.home_team || 'Partit' }} vs {{ order.match?.away_team || 'Equip' }}</h5>
+                <h5 class="mb-0 text-main fw-bold">{{ order.match?.home_team || 'Partit' }} vs {{ order.match?.away_team || 'Equip' }}</h5>
               </div>
               <div class="text-end">
                 <div class="text-neon fw-bold fs-4">{{ order.total_price }} €</div>
@@ -53,9 +53,9 @@
               </div>
               
               <div class="col-md-6">
-                <h6 class="text-white mb-2">Les teves localitats:</h6>
+                <h6 class="text-main mb-2">Les teves localitats:</h6>
                 <div class="d-flex flex-wrap gap-2">
-                  <div v-for="(seat, idx) in order.seats" :key="idx" class="badge bg-dark border border-secondary text-white p-2">
+                  <div v-for="(seat, idx) in order.seats" :key="idx" class="badge" style="background-color: rgba(128,128,128,0.2); border: 1px solid rgba(128,128,128,0.3); color: var(--text-main); padding: 0.5rem;">
                     <span class="text-primary-neon me-1">{{ order.ticket_type?.zone || 'General' }}</span> | {{ seat }}
                   </div>
                 </div>

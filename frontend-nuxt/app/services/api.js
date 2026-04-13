@@ -2,7 +2,7 @@ export const api = {
   baseURL: 'http://localhost:4000/api',
 
   async getMatches() {
-    const res = await fetch(`${this.baseURL}/matches`);
+    const res = await fetch(`${this.baseURL}/matches?_t=${Date.now()}`, { headers: { 'Cache-Control': 'no-cache' } });
     if (!res.ok) throw new Error('Error al obtener partidos');
     return res.json();
   },
@@ -38,9 +38,9 @@ export const api = {
   },
 
   async getAdminStats(token) {
-    const headers = { 'Content-Type': 'application/json' };
+    const headers = { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' };
     if (token) headers['Authorization'] = `Bearer ${token}`;
-    const res = await fetch(`${this.baseURL}/admin/stats`, { headers });
+    const res = await fetch(`${this.baseURL}/admin/stats?_t=${Date.now()}`, { headers });
     if (!res.ok) throw new Error('Error al obtener estadisticas');
     return res.json();
   },

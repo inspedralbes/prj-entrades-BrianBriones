@@ -1,7 +1,13 @@
 <template>
   <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
-      <h2 class="mb-4 fw-bold border-bottom pb-2">Comprar Entradas</h2>
+      <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+         <h2 class="fw-bold mb-0">Comprar Entradas</h2>
+         <div v-if="!inQueue && (matchStore.currentMatch)" class="card card-dark border-0 rounded-pill px-3 py-1 d-flex flex-row align-items-center gap-2 shadow-sm border border-danger border-opacity-50">
+           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-danger"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+           <span class="text-main fw-bold">{{ timerFormatted }}</span>
+         </div>
+      </div>
       
       <!-- Pantalla de Cola Virtual -->
       <div v-if="inQueue" class="text-center py-5 card shadow-sm p-4 border-warning">
@@ -37,6 +43,7 @@
           :match="matchStore.currentMatch"
           :seats="selectedSeatsData"
           @pay="handlePayment"
+          @timeout="handleTimeout"
         />
       </div>
     </div>
@@ -64,6 +71,34 @@ const queuePosition = ref(0);
 const currentStep = ref('selection');
 const selectedSeatsData = ref([]);
 
+// Temporizador Global
+const timeLeft = ref(420); // 7 minutes
+let timerInterval = null;
+
+const timerFormatted = computed(() => {
+  const m = Math.floor(timeLeft.value / 60).toString().padStart(2, '0');
+  const s = (timeLeft.value % 60).toString().padStart(2, '0');
+  return `${m}:${s}`;
+});
+
+const startTimer = () => {
+   if (timerInterval) clearInterval(timerInterval);
+   timerInterval = setInterval(() => {
+      if (timeLeft.value > 0) {
+         timeLeft.value -= 1;
+      } else {
+         clearInterval(timerInterval);
+         handleTimeout();
+      }
+   }, 1000);
+}
+
+watch(inQueue, (newVal) => {
+   if (!newVal && currentStep.value !== 'confirmed') {
+      startTimer();
+   }
+});
+
 onMounted(() => {
   // Asegurar que el partido e inventario (tickets) estén cargados
   if (!matchStore.currentMatch || matchStore.currentMatch.id != route.params.id) {
@@ -87,13 +122,14 @@ onMounted(() => {
   socket.on("ticketsUpdated", (data) => {
     // Si la pantalla de tickets la estamos viendo y hay un mensaje o actualización del mismo partido
     if (data.matchId == route.params.id || data.message) {
-      matchStore.fetchMatch(route.params.id); // recargar datos en tiempo real
+      matchStore.fetchMatch(route.params.id, true); // recarga en segundo plano sin spinner!
     }
   });
 });
 
 // Limpiamos eventos al salir
 onUnmounted(() => {
+  if (timerInterval) clearInterval(timerInterval);
   socket.emit('leaveQueue'); 
   socket.emit('leaveMatch', route.params.id); // Al salir de tickets, liberamos bloqueos temporales
   socket.off("ticketsUpdated");
@@ -145,5 +181,11 @@ const handlePayment = async () => {
     socket.emit('seatPurchased', { matchId: route.params.id, seats: seatIds });
     router.push('/confirmation');
   }
+};
+
+const handleTimeout = () => {
+  alert("El temps ha expirat. Els seients han sigut alliberats.");
+  socket.emit('leaveMatch', route.params.id);
+  router.push(`/match/${route.params.id}`);
 };
 </script>
