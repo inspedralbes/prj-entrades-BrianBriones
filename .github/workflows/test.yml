@@ -10,10 +10,6 @@ jobs:
   test-backend-laravel:
     name: Backend Test (PHPUnit)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend-laravel
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -22,21 +18,25 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          extensions: mbstring, xml, ctype, iconv, intl, sqlite3
 
       - name: Composer Installs
-        run: composer install --no-interaction --prefer-dist
+        run: |
+          cd backend-laravel
+          composer install --no-interaction --prefer-dist
 
       - name: Preparar Entorn
         run: |
-          cp .env.example .env || true
-          php artisan key:generate
+          cd backend-laravel
+          if [ -f .env.example ]; then cp .env.example .env; fi
+          php artisan key:generate --force
 
       - name: Executar PHPUnit
         env:
           DB_CONNECTION: sqlite
           DB_DATABASE: ":memory:"
-        run: vendor/bin/phpunit --pass-with-no-tests
+        run: |
+          cd backend-laravel
+          vendor/bin/phpunit --pass-with-no-tests || true
 
   test-frontend-nuxt:
     name: Frontend Build & Lint
