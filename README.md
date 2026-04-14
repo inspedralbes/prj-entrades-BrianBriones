@@ -21,7 +21,7 @@ El sistema inclou integració amb **Google OAuth** per a l'accés d'usuaris, sin
 ---
 
 ##  Gestor de tasques
-* **URL:** [Afegeix aquí l'enllaç a Taiga/Jira/Trello]
+* **URL:** [https://tree.taiga.io/project/brianbriones-dawtr3_bbe/backlog]
 
 ---
 
