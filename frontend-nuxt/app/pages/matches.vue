@@ -8,9 +8,6 @@
          <span class="badge bg-neon text-dark mb-2 px-3 py-2 fw-bold text-uppercase" style="letter-spacing: 2px;">Pròxim gran partit</span>
          <h1 class="display-3 fw-bold text-white mb-2" style="font-size: 5rem; letter-spacing: -2px;">EL CLÀSSIC</h1>
          <p class="fs-5 text-light mb-4" style="max-width: 600px;">Viu l'emoció del millor futbol del món sota els focus de l'estadi.</p>
-         <button class="btn btn-primary btn-lg px-5 py-3 fw-bold rounded-pill text-dark shadow">
-            Comprar Ara
-         </button>
       </div>
     </div>
 

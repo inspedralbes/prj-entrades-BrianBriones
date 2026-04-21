@@ -16,10 +16,6 @@
       <div class="row mb-5 align-items-center justify-content-center text-center">
         <!-- Home Team -->
         <div class="col-md-4 d-flex flex-column align-items-center">
-          <div class="team-logo-container mb-3 position-relative">
-            <div class="logo-backdrop"></div>
-            <img src="/img/home_player.png" alt="Home Team" class="team-player-img" />
-          </div>
           <h1 class="team-name text-main fw-bold mb-0 text-uppercase">{{ matchStore.currentMatch.home_team }}</h1>
         </div>
         
@@ -27,16 +23,12 @@
         <div class="col-md-4 d-flex flex-column align-items-center my-4 my-md-0">
           <h1 class="vs-text fw-bold fst-italic display-2 m-0 text-neon" style="letter-spacing: -2px;">VS</h1>
           <div class="badge rounded-pill bg-dark-subtle mt-3 px-4 py-2 text-uppercase" style="letter-spacing: 1.5px; font-size: 0.75rem; background-color: #24354b !important;">
-            LA LIGA EA SPORTS
+            Champions League
           </div>
         </div>
         
         <!-- Away Team -->
         <div class="col-md-4 d-flex flex-column align-items-center">
-          <div class="team-logo-container mb-3 position-relative">
-            <div class="logo-backdrop"></div>
-            <img src="/img/away_player.png" alt="Away Team" class="team-player-img" />
-          </div>
           <h1 class="team-name text-main fw-bold mb-0 text-uppercase">{{ matchStore.currentMatch.away_team }}</h1>
         </div>
       </div>

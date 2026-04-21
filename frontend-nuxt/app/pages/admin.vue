@@ -6,6 +6,7 @@
 import AdminPanel from '~/components/AdminPanel.vue';
 
 definePageMeta({
-  middleware: 'auth'
+  middleware: ['auth', 'admin-guard']
 });
 </script>
+

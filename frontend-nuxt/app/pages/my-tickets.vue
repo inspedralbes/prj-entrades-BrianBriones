@@ -19,8 +19,8 @@
           <line x1="8" y1="2" x2="8" y2="6"></line>
           <line x1="3" y1="10" x2="21" y2="10"></line>
         </svg>
-        <h4 class="text-main">Aún no has comprado ninguna entrada.</h4>
-        <p class="text-muted-custom">Explora los próximos partidos y vive la pasión en directo.</p>
+        <h4 class="text-main">Encara no has comprat cap entrada.</h4>
+        <p class="text-muted-custom">Explora els propers partits i viu la passió en directe.</p>
         <NuxtLink to="/matches" class="btn btn-outline-neon mt-3 rounded-pill px-4">Veure Partits</NuxtLink>
       </div>
 
