@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 relative">
+  <div class="d-flex align-items-center justify-content-center min-vh-100" style="background-color: var(--bg-color, #050b18);">
     <AdminLoginModal />
   </div>
 </template>

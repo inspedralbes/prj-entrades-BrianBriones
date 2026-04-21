@@ -152,24 +152,28 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Antiguo lockSeat uno por uno ya no se usa, lo dejamos para retrocompatibilidad
   socket.on('lockSeat', ({ matchId, seatId }) => {
+    console.log(`[lockSeat] Recibido lockSeat para partido ${matchId}, asiento ${seatId} del usuario ${socket.id}`);
     if (!lockedSeats[matchId]) lockedSeats[matchId] = {};
     
     // Si ya está bloqueado por otro, avisar
     if (lockedSeats[matchId][seatId] && lockedSeats[matchId][seatId] !== socket.id) {
+       console.log(`[lockSeat] Asiento ${seatId} ya bloqueado por ${lockedSeats[matchId][seatId]}`);
        socket.emit('seatLockFailed', { seatId });
        return;
     }
     
     lockedSeats[matchId][seatId] = socket.id;
     io.to(`match_${matchId}`).emit('seatLocked', { seatId, socketId: socket.id });
+    // FALLBACK SEGURO GLOBAL:
+    io.emit('globalSeatLocked', { matchId, seatId, socketId: socket.id });
   });
 
   socket.on('unlockSeat', ({ matchId, seatId }) => {
     if (lockedSeats[matchId] && lockedSeats[matchId][seatId] === socket.id) {
       delete lockedSeats[matchId][seatId];
       io.to(`match_${matchId}`).emit('seatUnlocked', { seatId });
+      io.emit('globalSeatUnlocked', { matchId, seatId });
     }
   });
 

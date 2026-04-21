@@ -184,7 +184,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, reactive, computed, onMounted, onUnmounted } from 'vue';
 import { socket } from '~/services/socket';
 
 const props = defineProps({
@@ -231,8 +231,17 @@ const setSeatStateById = (id, state) => {
   const parts = id.split('-');
   const zone = mapIdToZone[parts[0]];
   const index = parseInt(parts[1], 10);
+  console.log(`[setSeatStateById] Actualizando ${zone} en índice ${index} a estado ${state}`);
+  
   if (zone && index) {
-     seatStates.value[zone].splice(index - 1, 1, state);
+     const newArr = [...seatStates.value[zone]];
+     newArr[index - 1] = state;
+     
+     // 100% Guaranteed Hack para Vue Reactivity
+     seatStates.value = {
+        ...seatStates.value,
+        [zone]: newArr
+     };
      
      // Si cambiaron el estado a 3 y lo teniamos seleccionado, removerlo!
      if (state === 3) {
@@ -263,15 +272,23 @@ onMounted(() => {
   });
 
   socket.on('seatLocked', ({ seatId, socketId }) => {
+    console.log(`[Socket] Received seatLocked! seatId: ${seatId}, socketId: ${socketId}, My socket: ${socket.id}`);
     if (socketId !== socket.id) {
        setSeatStateById(seatId, 3);
     }
   });
 
-  socket.on('seatUnlocked', ({ seatId }) => {
-     // Solo libéralo si estaba bloqueado por alguien, si está comprado u ocupado fijo no.
-     // Como no guardamos ocupado fijo dinamicamente aquí, lo volvemos 0
-     setSeatStateById(seatId, 0);
+  socket.on('globalSeatLocked', ({ matchId, seatId, socketId }) => {
+    console.log(`[Socket] globalSeatLocked: matchId ${matchId}, seatId ${seatId}`);
+    if (props.match && props.match.id == matchId && socketId !== socket.id) {
+       setSeatStateById(seatId, 3);
+    }
+  });
+
+  socket.on('globalSeatUnlocked', ({ matchId, seatId }) => {
+    if (props.match && props.match.id == matchId) {
+       setSeatStateById(seatId, 0);
+    }
   });
 
   socket.on('seatLockFailed', ({ seatId }) => {
@@ -284,6 +301,8 @@ onUnmounted(() => {
   socket.off('initialLocks');
   socket.off('seatLocked');
   socket.off('seatUnlocked');
+  socket.off('globalSeatLocked');
+  socket.off('globalSeatUnlocked');
   socket.off('seatLockFailed');
   socket.off('initialOccupied');
   socket.off('seatsOccupied');
@@ -302,7 +321,9 @@ const toggleSeat = (seatData, zone, index) => {
   }
 
   if (currentState === 2) {
-    seatStates.value[zone].splice(index - 1, 1, 0);
+    const newArr = [...seatStates.value[zone]];
+    newArr[index - 1] = 0;
+    seatStates.value[zone] = newArr;
     selectedSeatsList.value = selectedSeatsList.value.filter(s => s.id !== seatData.id);
     if (props.match) socket.emit('unlockSeat', { matchId: props.match.id, seatId: seatData.id });
   } else {
@@ -312,14 +333,18 @@ const toggleSeat = (seatData, zone, index) => {
        return;
     }
     
-    seatStates.value[zone].splice(index - 1, 1, 2);
+    const newArr = [...seatStates.value[zone]];
+    newArr[index - 1] = 2;
+    seatStates.value[zone] = newArr;
     selectedSeatsList.value.push({ ...seatData, list: zone, index });
     if (props.match) socket.emit('lockSeat', { matchId: props.match.id, seatId: seatData.id });
   }
 };
 
 const removeSeatFromList = (seat) => {
-  seatStates.value[seat.list].splice(seat.index - 1, 1, 0);
+  const newArr = [...seatStates.value[seat.list]];
+  newArr[seat.index - 1] = 0;
+  seatStates.value[seat.list] = newArr;
   selectedSeatsList.value = selectedSeatsList.value.filter(s => s.id !== seat.id);
   if (props.match) socket.emit('unlockSeat', { matchId: props.match.id, seatId: seat.id });
 };
