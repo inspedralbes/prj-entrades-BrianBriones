@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # SERVER BACKEND: Laravel (Puerto 8000)
+  # ==========================================
+  backend-laravel:
+    build:
+      context: ./backend-laravel
+      dockerfile: Dockerfile
+    container_name: backend-laravel
+    ports:
+      - "8000:8000"
+    # Montamos un volumen nombrado en la carpeta completa database
+    # para asegurar que database.sqlite (y futuros datos) no se pierdan al reiniciar.
+    volumes:
+      - sqlite_data:/app/database
+    networks:
+      - app_network
+
+  # ==========================================
+  # WEBSOCKET SERVER: Node.js (Puerto 4000)
+  # ==========================================
+  backend-node:
+    build:
+      context: ./backend-node
+      dockerfile: Dockerfile
+    container_name: backend-node
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - LARAVEL_URL=http://backend-laravel:8000
+    networks:
+      - app_network
+    depends_on:
+      - backend-laravel
+
+  # ==========================================
+  # FRONTEND: Nuxt 3 (Puerto 3000)
+  # ==========================================
+  frontend-nuxt:
+    build:
+      context: ./frontend-nuxt
+      dockerfile: Dockerfile
+    container_name: frontend-nuxt
+    ports:
+      - "3000:3000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3000
+      # Si el Nuxt SSR necesita acceder al backend internamente a través de variables de entorno:
+      - NUXT_PUBLIC_API_URL=http://backend-laravel:8000
+      - NUXT_PUBLIC_SOCKET_URL=http://localhost:4000
+    networks:
+      - app_network
+    depends_on:
+      - backend-node
+      - backend-laravel
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  # Volumen para persistir los datos de SQLite y evitar pérdida de información
+  sqlite_data:
